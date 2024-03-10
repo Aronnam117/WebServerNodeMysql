@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 const mysql = require('mysql2');
+require('dotenv').config();
 
 const app = express();
 const http = require('http').Server(app);
@@ -19,11 +20,11 @@ const dgram = require('dgram');
 const udpServer = dgram.createSocket('udp4');
 
 const db = mysql.createPool({
-  host: '%%',
-  user: '%%',
-  password: '%%',
-  database: '%%',  
-  table: '%%',    
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  table: process.env.DB_TABLE,
 });
 
 
