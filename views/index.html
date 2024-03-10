@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Información Satelital</title>
+ 
+  <script src="http://179.33.171.24:4000/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1>Información Satelital</h1>
+  <div id="datosContainer">
+    <p id="latitud">Latitud: </p>
+    <p id="longitud">Longitud: </p>
+    <p id="fecha">Fecha: </p>
+    <p id="hora">Hora: </p>
+  </div>
+
+ 
+  <script>
+    const socket = io();
+
+socket.on('datosActualizados', (data) => {
+  // Actualizar la interfaz de usuario con los nuevos datos
+  document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
+  document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
+  document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
+  document.getElementById('hora').innerText = 'Hora: ' + data.hora;
+});
+  </script>
+</body>
+</html>

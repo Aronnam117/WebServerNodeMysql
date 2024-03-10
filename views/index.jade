@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Información Satelital</title>
+  <!-- Agrega enlaces a los archivos de Socket.io -->
+  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Información Satelital</h1>
+  <div id="datosContainer">
+    <p id="datos"></p>
+  </div>
+
+  <!-- Agrega un script para manejar la conexión con Socket.io y mostrar los datos -->
+  <script>
+    const socket = io();
+
+    socket.on('datosActualizados', (data) => {
+      document.getElementById('datos').innerText = data;
+    });
+  </script>
+</body>
+</html>
