@@ -2,6 +2,10 @@ version: '3'
 
 services:
   web:
-    image: imagenservidorweb:latest
+    build: .
     ports:
       - "4000:4000"
+    environment:
+     - HOST=0.0.0.0
+     - PORT=4000
+       
