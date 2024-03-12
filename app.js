@@ -20,7 +20,7 @@ const dgram = require('dgram');
 const udpServer = dgram.createSocket('udp4');
 
 const db = mysql.createPool({
-  host: process.env.DB_HOST,
+  host: "database.cdomg4642kmq.us-east-1.rds.amazonaws.com",
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
