@@ -27,7 +27,6 @@ const db = mysql.createPool({
   table: process.env.DB_TABLE,
 });
 
-
 const ultimaInformacion = {
   latitud: 0,
   longitud: 0,
@@ -41,7 +40,6 @@ udpServer.on('message', (msg, rinfo) => {
 
   const [latitud, longitud, fecha, hora] = data.split(' ');
 
-  
   console.log('Latitud:', latitud);
   console.log('Longitud:', longitud);
   console.log('Fecha:', fecha);
@@ -60,7 +58,6 @@ udpServer.on('message', (msg, rinfo) => {
     }
   });
 
-  
   io.emit('datosActualizados', { latitud, longitud, fecha, hora });
 });
 
@@ -74,13 +71,18 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+// Declarar iniciarMap como global
+function iniciarMap() {
+  // ...
+}
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  
   socket.emit('datosActualizados', ultimaInformacion);
 
-  
   socket.on('disconnect', () => {
     console.log('Un cliente se ha desconectado');
   });
