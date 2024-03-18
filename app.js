@@ -71,6 +71,22 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+app.get('/coordenadas', (req, res) => {
+  const query = 'SELECT * FROM coordenadas'; // Consulta SQL 
+  // Ejecutar la consulta en la base de datos
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los datos de la base de datos:', err);
+      res.status(500).send('Error al obtener los datos de la base de datos');
+      return;
+    }
+
+    // Enviar los datos obtenidos como respuesta en formato JSON
+    res.json(results);
+  });
+});
+
+
 // Declarar iniciarMap como global
 function iniciarMap() {
   // ...
@@ -88,7 +104,7 @@ io.on('connection', (socket) => {
   });
 });
 
-http.listen(4000, '0.0.0.0', () => {
+http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 4000');
 });
 
