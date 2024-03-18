@@ -20,13 +20,12 @@ const dgram = require('dgram');
 const udpServer = dgram.createSocket('udp4');
 
 const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  table: process.env.DB_TABLE,
+  host: "database-1.cdomg4642kmq.us-east-1.rds.amazonaws.com",
+  user: "mrmatt",
+  password: "Aronna117",
+  database: "mrmatt",
+ 
 });
-
 
 const ultimaInformacion = {
   latitud: 0,
@@ -41,7 +40,6 @@ udpServer.on('message', (msg, rinfo) => {
 
   const [latitud, longitud, fecha, hora] = data.split(' ');
 
-  
   console.log('Latitud:', latitud);
   console.log('Longitud:', longitud);
   console.log('Fecha:', fecha);
@@ -60,7 +58,6 @@ udpServer.on('message', (msg, rinfo) => {
     }
   });
 
-  
   io.emit('datosActualizados', { latitud, longitud, fecha, hora });
 });
 
@@ -74,19 +71,40 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+app.get('/coordenadas', (req, res) => {
+  const query = 'SELECT * FROM coordenadas'; // Consulta SQL 
+  // Ejecutar la consulta en la base de datos
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los datos de la base de datos:', err);
+      res.status(500).send('Error al obtener los datos de la base de datos');
+      return;
+    }
+
+    // Enviar los datos obtenidos como respuesta en formato JSON
+    res.json(results);
+  });
+});
+
+
+// Declarar iniciarMap como global
+function iniciarMap() {
+  // ...
+}
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  
   socket.emit('datosActualizados', ultimaInformacion);
 
-  
   socket.on('disconnect', () => {
     console.log('Un cliente se ha desconectado');
   });
 });
 
-http.listen(4000, '0.0.0.0', () => {
+http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 4000');
 });
 

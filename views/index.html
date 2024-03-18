@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <title>Información Satelital</title>
  
-  <script src="http://3.137.213.222:4000/socket.io/socket.io.js"></script>
+
+  <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
+
 </head>
 <body>
   <h1>Información Satelital</h1>
@@ -14,18 +16,49 @@
     <p id="fecha">Fecha: </p>
     <p id="hora">Hora: </p>
   </div>
-
- 
   <script>
-    const socket = io();
-
-socket.on('datosActualizados', (data) => {
-  // Actualizar la interfaz de usuario con los nuevos datos
-  document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
-  document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
-  document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
-  document.getElementById('hora').innerText = 'Hora: ' + data.hora;
-});
+    // Declarar iniciarMap como global
+    function iniciarMap() {
+      // ...
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  <div id="mapa" style="height: 400px;"></div>
+  <script>
+    let marker; // Variable global para el marcador
+  
+    function iniciarMap() {
+      // Configuración del mapa
+      const mapOptions = {
+        center: { lat: 0, lng: 0 }, // Coordenadas iniciales
+        zoom: 12, // Nivel de zoom inicial
+      };
+  
+      // Crear el mapa
+      const mapa = new google.maps.Map(document.getElementById('mapa'), mapOptions);
+  
+      // Crear el marcador
+      marker = new google.maps.Marker({
+        position: mapOptions.center,
+        map: mapa,
+        title: 'Ubicación actual',
+      });
+  
+      const socket = io();
+  
+      socket.on('datosActualizados', (data) => {
+        // Actualizar la interfaz de usuario con los nuevos datos
+        document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
+        document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
+        document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
+        document.getElementById('hora').innerText = 'Hora: ' + data.hora;
+  
+        // Actualizar posición del marcador
+        const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
+        marker.setPosition(markerPosition);
+        mapa.setCenter(markerPosition);
+      });
+    }
   </script>
 </body>
 </html>
