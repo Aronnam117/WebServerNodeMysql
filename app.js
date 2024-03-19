@@ -24,9 +24,10 @@ const db = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+ 
 });
 
-let ultimaInformacion = {
+const ultimaInformacion = {
   latitud: 0,
   longitud: 0,
   fecha: '',
@@ -85,6 +86,7 @@ app.get('/coordenadas', (req, res) => {
   });
 });
 
+
 // Declarar iniciarMap como global
 function iniciarMap() {
   // ...
@@ -95,27 +97,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  // Consulta SQL para obtener la última entrada de coordenadas
-  const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
-
-  // Ejecutar la consulta en la base de datos
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error al obtener los datos más recientes de la base de datos:', err);
-    } else {
-      // Verificar si se obtuvieron resultados
-      if (results.length > 0) {
-        // Asignar los datos más recientes al objeto ultimaInformacion
-        ultimaInformacion.latitud = results[0].latitud;
-        ultimaInformacion.longitud = results[0].longitud;
-        ultimaInformacion.fecha = results[0].fecha;
-        ultimaInformacion.hora = results[0].hora;
-
-        // Emitir los datos actualizados al cliente
-        socket.emit('datosActualizados', ultimaInformacion);
-      }
-    }
-  });
+  socket.emit('datosActualizados', ultimaInformacion);
 
   socket.on('disconnect', () => {
     console.log('Un cliente se ha desconectado');
@@ -123,7 +105,7 @@ io.on('connection', (socket) => {
 });
 
 http.listen(80, '0.0.0.0', () => {
-  console.log('Servidor web escuchando en el puerto 80');
+  console.log('Servidor web escuchando en el puerto 4000');
 });
 
 module.exports = app;
