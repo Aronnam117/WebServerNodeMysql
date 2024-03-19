@@ -126,12 +126,4 @@ http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
 });
 
-// Usar 'forever' para mantener la aplicación en ejecución en segundo plano
-const forever = require('forever');
-const child = new (forever.Monitor)('app.js', {
-  silent: true,
-  args: [],
-});
-
-child.start();
-
+module.exports = app;
