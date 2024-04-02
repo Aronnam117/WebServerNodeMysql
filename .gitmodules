@@ -1,3 +1,6 @@
 [submodule "WebServerNodeMysqlRepo"]
 	path = WebServerNodeMysqlRepo
 	url = https://github.com/Aronnam117/WebServerNodeMysql.git
+[submodule "WebServerNodeMysql"]
+	path = WebServerNodeMysql
+	url = https://github.com/Aronnam117/WebServerNodeMysql.git
