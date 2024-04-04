@@ -60,11 +60,6 @@ udpServer.on('message', (msg, rinfo) => {
   io.emit('datosActualizados', { latitud, longitud, fecha, hora });
 });
 
-// Enviar la última ubicación al cliente
-socket.on('obtenerUltimaUbicacion', () => {
-  socket.emit('datosActualizados', ultimaInformacion);
-});
-
 udpServer.bind(10001, '0.0.0.0', () => {
   console.log('Servidor UDP escuchando en el puerto 10001');
 });
@@ -118,47 +113,35 @@ app.use(express.static(path.join(__dirname, 'public')));
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
+  // Enviar la última ubicación al cliente cuando se solicita
+  socket.on('obtenerUltimaUbicacion', () => {
+    socket.emit('datosActualizados', ultimaInformacion);
+  });
 
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error al obtener los datos más recientes de la base de datos:', err);
-    } else {
-      if (results.length > 0) {
-        ultimaInformacion.latitud = results[0].latitud;
-        ultimaInformacion.longitud = results[0].longitud;
-        ultimaInformacion.fecha = results[0].fecha;
-        ultimaInformacion.hora = results[0].hora;
+  // Manejar el evento de filtrado de datos
+  socket.on('filtrarDatos', (filtro) => {
+    const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
 
-        socket.emit('datosActualizados', ultimaInformacion);
+    const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
+    const values = [fechaInicio, horaInicio, fechaFin, horaFin];
+
+    db.query(query, values, (err, results) => {
+      if (err) {
+        console.error('Error al filtrar las rutas:', err);
+        return;
       }
-    }
+
+      // Crear un array de objetos con las coordenadas filtradas
+      const rutaFiltrada = results.map(row => ({ lat: row.latitud, lng: row.longitud }));
+
+      // Enviar la ruta filtrada al cliente
+      socket.emit('rutaFiltrada', rutaFiltrada);
+    });
   });
 
   socket.on('disconnect', () => {
     console.log('Un cliente se ha desconectado');
   });
-
-  // Manejar el evento de filtrado de datos
-socket.on('filtrarDatos', (filtro) => {
-  const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
-
-  const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
-  const values = [fechaInicio, horaInicio, fechaFin, horaFin];
-
-  db.query(query, values, (err, results) => {
-    if (err) {
-      console.error('Error al filtrar las rutas:', err);
-      return;
-    }
-
-    // Crear un array de objetos con las coordenadas filtradas
-    const rutaFiltrada = results.map(row => ({ lat: row.latitud, lng: row.longitud }));
-
-    // Enviar la ruta filtrada al cliente
-    socket.emit('rutaFiltrada', rutaFiltrada);
-  });
-});
 });
 
 http.listen(80, '0.0.0.0', () => {
