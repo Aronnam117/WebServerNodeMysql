@@ -14,22 +14,18 @@
     <p id="fecha">Fecha: </p>
     <p id="hora">Hora: </p>
   </div>
+  <div id="mapa" style="height: 400px;"></div>
   <div>
-    <label for="fechaInicio">Fecha de inicio:</label>
+    <label for="fechaInicio">Fecha Inicio:</label>
     <input type="date" id="fechaInicio">
-
-    <label for="horaInicio">Hora de inicio:</label>
+    <label for="horaInicio">Hora Inicio:</label>
     <input type="time" id="horaInicio">
-
-    <label for="fechaFin">Fecha de fin:</label>
+    <label for="fechaFin">Fecha Fin:</label>
     <input type="date" id="fechaFin">
-
-    <label for="horaFin">Hora de fin:</label>
+    <label for="horaFin">Hora Fin:</label>
     <input type="time" id="horaFin">
-
     <button onclick="filtrarCoordenadas()">Filtrar</button>
   </div>
-  <div id="mapa" style="height: 400px;"></div>
   <script>
     let marker; // Variable global para el marcador
     let polyline; // Variable global para la polilínea
@@ -85,14 +81,12 @@
       const fechaFin = document.getElementById('fechaFin').value;
       const horaFin = document.getElementById('horaFin').value;
 
-      // Enviar una solicitud al servidor con los valores seleccionados
-      fetch(`/coordenadas?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`)
+      const url = `/coordenadas?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
+
+      fetch(url)
         .then(response => response.json())
-        .then(coordenadas => {
-          // Procesar las coordenadas recibidas del servidor
-          // Actualizar el mapa con la nueva ruta o polilínea
-        })
-        .catch(error => console.error('Error al filtrar coordenadas:', error));
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
     }
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>

@@ -24,7 +24,6 @@ const db = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
- 
 });
 
 const ultimaInformacion = {
@@ -71,21 +70,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-app.get('/coordenadas', (req, res) => {
-  const query = 'SELECT * FROM coordenadas'; // Consulta SQL 
-  // Ejecutar la consulta en la base de datos
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error al obtener los datos de la base de datos:', err);
-      res.status(500).send('Error al obtener los datos de la base de datos');
-      return;
-    }
-
-    // Enviar los datos obtenidos como respuesta en formato JSON
-    res.json(results);
-  });
-});
-
+// No se necesita la ruta /coordenadas aquí
 
 // Declarar iniciarMap como global
 function iniciarMap() {
@@ -129,4 +114,3 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 module.exports = app;
-//prueba
