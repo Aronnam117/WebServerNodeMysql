@@ -60,6 +60,11 @@ udpServer.on('message', (msg, rinfo) => {
   io.emit('datosActualizados', { latitud, longitud, fecha, hora });
 });
 
+// Enviar la última ubicación al cliente
+socket.on('obtenerUltimaUbicacion', () => {
+  socket.emit('datosActualizados', ultimaInformacion);
+});
+
 udpServer.bind(10001, '0.0.0.0', () => {
   console.log('Servidor UDP escuchando en el puerto 10001');
 });
@@ -86,7 +91,7 @@ app.get('/coordenadas', (req, res) => {
 });
 
 // Filtrado de rutas por intervalo de tiempo
-app.get('/filtrar-rutas', (req, res) => {
+app.get('/', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
 
   const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
@@ -113,9 +118,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  // Enviar la última ubicación al cliente cuando se solicita
-  socket.on('obtenerUltimaUbicacion', () => {
-    socket.emit('datosActualizados', ultimaInformacion);
+  const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los datos más recientes de la base de datos:', err);
+    } else {
+      if (results.length > 0) {
+        ultimaInformacion.latitud = results[0].latitud;
+        ultimaInformacion.longitud = results[0].longitud;
+        ultimaInformacion.fecha = results[0].fecha;
+        ultimaInformacion.hora = results[0].hora;
+
+        socket.emit('datosActualizados', ultimaInformacion);
+      }
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Un cliente se ha desconectado');
   });
 
   // Manejar el evento de filtrado de datos
@@ -137,10 +158,6 @@ io.on('connection', (socket) => {
       // Enviar la ruta filtrada al cliente
       socket.emit('rutaFiltrada', rutaFiltrada);
     });
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Un cliente se ha desconectado');
   });
 });
 
