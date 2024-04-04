@@ -5,7 +5,7 @@
   <title>Información Satelital</title>
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
 </head>
-<body>
+<body onload="cargarUltimaUbicacion()">
   <h1>Información Satelital</h1>
   <div id="datosContainer">
     <p id="latitud">Latitud: </p>
@@ -86,6 +86,11 @@
       });
     }
 
+    function cargarUltimaUbicacion() {
+      const socket = io();
+      socket.emit('obtenerUltimaUbicacion');
+    }
+
     function filtrar() {
       const fechaInicio = document.getElementById('fechaInicio').value;
       const horaInicio = document.getElementById('horaInicio').value;
@@ -104,6 +109,6 @@
       socket.emit('filtrarDatos', filtro);
     }
   </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=iniciarMap"></script>
 </body>
 </html>
