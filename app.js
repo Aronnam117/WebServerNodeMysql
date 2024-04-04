@@ -15,6 +15,10 @@ const io = require('socket.io')(http, {
 
 app.use(cors());
 
+// Crear el servidor UDP
+const dgram = require('dgram');
+const udpServer = dgram.createSocket('udp4');
+
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -28,12 +32,6 @@ const ultimaInformacion = {
   fecha: '',
   hora: '',
 };
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Escuchar mensajes UDP
-const dgram = require('dgram');
-const udpServer = dgram.createSocket('udp4');
 
 udpServer.on('message', (msg, rinfo) => {
   const data = msg.toString();
@@ -66,7 +64,27 @@ udpServer.bind(10001, '0.0.0.0', () => {
   console.log('Servidor UDP escuchando en el puerto 10001');
 });
 
-// Manejo de la conexión del socket
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
+
+app.get('/coordenadas', (req, res) => {
+  const query = 'SELECT * FROM coordenadas'; // Consulta SQL 
+  // Ejecutar la consulta en la base de datos
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los datos de la base de datos:', err);
+      res.status(500).send('Error al obtener los datos de la base de datos');
+      return;
+    }
+
+    // Enviar los datos obtenidos como respuesta en formato JSON
+    res.json(results);
+  });
+});
+
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
@@ -90,28 +108,32 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Un cliente se ha desconectado');
   });
-
-  // Manejo del evento de filtrado de datos
-  socket.on('filtrarDatos', (filtro) => {
-    const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
-
-    const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
-    const values = [fechaInicio, horaInicio, fechaFin, horaFin];
-
-    db.query(query, values, (err, results) => {
-      if (err) {
-        console.error('Error al filtrar las rutas:', err);
-        socket.emit('errorFiltrado', 'Error al filtrar las rutas');
-      } else {
-        const rutaFiltrada = results.map((row) => ({ lat: row.latitud, lng: row.longitud }));
-        socket.emit('rutaFiltrada', rutaFiltrada);
-      }
-    });
-  });
 });
 
 http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
+});
+
+// Filtrado de rutas por intervalo de tiempo
+app.get('/', (req, res) => {
+  const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
+
+  const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
+  const values = [fechaInicio, horaInicio, fechaFin, horaFin];
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.error('Error al filtrar las rutas:', err);
+      res.status(500).send('Error al filtrar las rutas');
+      return;
+    }
+
+    // Emitir el resultado al cliente
+    io.emit('rutaFiltrada', results);
+
+    // Redireccionar al cliente de vuelta a la página principal con los parámetros de filtrado
+    res.redirect(`/?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`);
+  });
 });
 
 module.exports = app;
