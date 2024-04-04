@@ -99,9 +99,14 @@ app.get('/', (req, res) => {
       return;
     }
 
-    res.json(results);
+    // Emitir el resultado al cliente
+    io.emit('rutaFiltrada', results);
+
+    // Redireccionar al cliente de vuelta a la página principal con los parámetros de filtrado
+    res.redirect(`/?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`);
   });
 });
+
 
 // Declarar iniciarMap como global
 function iniciarMap() {

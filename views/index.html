@@ -87,10 +87,19 @@
     }
 
     function filtrar() {
-      const fechaInicio = document.getElementById('fechaInicio').value;
-      const horaInicio = document.getElementById('horaInicio').value;
-      const fechaFin = document.getElementById('fechaFin').value;
-      const horaFin = document.getElementById('horaFin').value;
+  const fechaInicio = document.getElementById('fechaInicio').value;
+  const horaInicio = document.getElementById('horaInicio').value;
+  const fechaFin = document.getElementById('fechaFin').value;
+  const horaFin = document.getElementById('horaFin').value;
+
+  // Actualizar la URL con los parámetros de filtrado
+  const newUrl = `/?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
+  window.history.pushState({}, '', newUrl);
+
+  // Enviar el filtro al servidor
+  const socket = io();
+  socket.emit('filtrarDatos', { fechaInicio, horaInicio, fechaFin, horaFin });
+}
 
       const filtro = {
         fechaInicio,
@@ -99,10 +108,7 @@
         horaFin
       };
 
-      // Enviar el filtro al servidor
-      const socket = io();
-      socket.emit('filtrarDatos', filtro);
-    }
+      
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
