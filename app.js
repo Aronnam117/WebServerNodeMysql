@@ -24,7 +24,6 @@ const db = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
- 
 });
 
 const ultimaInformacion = {
@@ -72,23 +71,21 @@ app.get('/', (req, res) => {
 });
 
 app.get('/ruta', (req, res) => {
-  // Obtener los parámetros de filtrado de la URL
   const fechaInicio = req.query.fechaInicio;
   const horaInicio = req.query.horaInicio;
   const fechaFin = req.query.fechaFin;
   const horaFin = req.query.horaFin;
 
-  // Consultar la base de datos con los parámetros de filtrado
-  const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= '${fechaInicio}' AND hora >= '${horaInicio}' AND fecha <= '${fechaFin}' AND hora <= '${horaFin}'`;
+  const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
+  const values = [fechaInicio, horaInicio, fechaFin, horaFin];
 
-  db.query(query, (err, results) => {
+  db.query(query, values, (err, results) => {
     if (err) {
       console.error('Error al obtener los datos de la base de datos:', err);
       res.status(500).send('Error al obtener los datos de la base de datos');
       return;
     }
 
-    // Enviar los datos obtenidos como respuesta en formato JSON
     res.json(results);
   });
 });
@@ -103,23 +100,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  // Consulta SQL para obtener la última entrada de coordenadas
   const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
 
-  // Ejecutar la consulta en la base de datos
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error al obtener los datos más recientes de la base de datos:', err);
     } else {
-      // Verificar si se obtuvieron resultados
       if (results.length > 0) {
-        // Asignar los datos más recientes al objeto ultimaInformacion
         ultimaInformacion.latitud = results[0].latitud;
         ultimaInformacion.longitud = results[0].longitud;
         ultimaInformacion.fecha = results[0].fecha;
         ultimaInformacion.hora = results[0].hora;
 
-        // Emitir los datos actualizados al cliente
         socket.emit('datosActualizados', ultimaInformacion);
       }
     }
@@ -135,4 +127,3 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 module.exports = app;
-//prueba
