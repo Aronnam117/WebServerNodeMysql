@@ -74,6 +74,8 @@ app.get('/coordenadas', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
   const query = 'SELECT * FROM coordenadas WHERE fecha BETWEEN ? AND ? AND hora BETWEEN ? AND ?';
   const values = [fechaInicio, fechaFin, horaInicio, horaFin];
+  console.log('Query:', query);
+  console.log('Values:', values);
 
   db.query(query, values, (err, results) => {
     if (err) {
