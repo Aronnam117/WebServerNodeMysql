@@ -14,6 +14,21 @@
     <p id="fecha">Fecha: </p>
     <p id="hora">Hora: </p>
   </div>
+  <div>
+    <label for="fechaInicio">Fecha de inicio:</label>
+    <input type="date" id="fechaInicio">
+
+    <label for="horaInicio">Hora de inicio:</label>
+    <input type="time" id="horaInicio">
+
+    <label for="fechaFin">Fecha de fin:</label>
+    <input type="date" id="fechaFin">
+
+    <label for="horaFin">Hora de fin:</label>
+    <input type="time" id="horaFin">
+
+    <button onclick="filtrarCoordenadas()">Filtrar</button>
+  </div>
   <div id="mapa" style="height: 400px;"></div>
   <script>
     let marker; // Variable global para el marcador
@@ -62,6 +77,22 @@
         const path = polyline.getPath();
         path.push(markerPosition);
       });
+    }
+
+    function filtrarCoordenadas() {
+      const fechaInicio = document.getElementById('fechaInicio').value;
+      const horaInicio = document.getElementById('horaInicio').value;
+      const fechaFin = document.getElementById('fechaFin').value;
+      const horaFin = document.getElementById('horaFin').value;
+
+      // Enviar una solicitud al servidor con los valores seleccionados
+      fetch(`/coordenadas?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`)
+        .then(response => response.json())
+        .then(coordenadas => {
+          // Procesar las coordenadas recibidas del servidor
+          // Actualizar el mapa con la nueva ruta o polilínea
+        })
+        .catch(error => console.error('Error al filtrar coordenadas:', error));
     }
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
