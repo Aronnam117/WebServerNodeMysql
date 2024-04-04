@@ -5,7 +5,7 @@
   <title>Información Satelital</title>
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
 </head>
-<body onload="cargarUltimaUbicacion()">
+<body>
   <h1>Información Satelital</h1>
   <div id="datosContainer">
     <p id="latitud">Latitud: </p>
@@ -84,11 +84,6 @@
           strokeWeight: 2,
         });
       });
-    }
-
-    function cargarUltimaUbicacion() {
-      const socket = io();
-      socket.emit('obtenerUltimaUbicacion');
     }
 
     function filtrar() {

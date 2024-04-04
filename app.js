@@ -60,11 +60,6 @@ udpServer.on('message', (msg, rinfo) => {
   io.emit('datosActualizados', { latitud, longitud, fecha, hora });
 });
 
-// Enviar la última ubicación al cliente
-socket.on('obtenerUltimaUbicacion', () => {
-  socket.emit('datosActualizados', ultimaInformacion);
-});
-
 udpServer.bind(10001, '0.0.0.0', () => {
   console.log('Servidor UDP escuchando en el puerto 10001');
 });
@@ -137,27 +132,6 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('Un cliente se ha desconectado');
-  });
-
-  // Manejar el evento de filtrado de datos
-  socket.on('filtrarDatos', (filtro) => {
-    const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
-
-    const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
-    const values = [fechaInicio, horaInicio, fechaFin, horaFin];
-
-    db.query(query, values, (err, results) => {
-      if (err) {
-        console.error('Error al filtrar las rutas:', err);
-        return;
-      }
-
-      // Crear un array de objetos con las coordenadas filtradas
-      const rutaFiltrada = results.map(row => ({ lat: row.latitud, lng: row.longitud }));
-
-      // Enviar la ruta filtrada al cliente
-      socket.emit('rutaFiltrada', rutaFiltrada);
-    });
   });
 });
 
