@@ -115,7 +115,7 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 // Filtrado de rutas por intervalo de tiempo
-app.get('/', (req, res) => {
+app.get('/filtrarRutas', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
 
   const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
@@ -128,12 +128,10 @@ app.get('/', (req, res) => {
       return;
     }
 
-    // Emitir el resultado al cliente
-    io.emit('rutaFiltrada', results);
-
-    // Redireccionar al cliente de vuelta a la página principal con los parámetros de filtrado
-    res.redirect(`/?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`);
+    // Enviar la ruta filtrada al cliente
+    res.json(results);
   });
 });
+
 
 module.exports = app;
