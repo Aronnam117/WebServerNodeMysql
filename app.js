@@ -133,6 +133,27 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Un cliente se ha desconectado');
   });
+
+  // Manejar el evento de filtrado de datos
+  socket.on('filtrarDatos', (filtro) => {
+    const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
+
+    const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
+    const values = [fechaInicio, horaInicio, fechaFin, horaFin];
+
+    db.query(query, values, (err, results) => {
+      if (err) {
+        console.error('Error al filtrar las rutas:', err);
+        return;
+      }
+
+      // Crear un array de objetos con las coordenadas filtradas
+      const rutaFiltrada = results.map(row => ({ lat: row.latitud, lng: row.longitud }));
+
+      // Enviar la ruta filtrada al cliente
+      socket.emit('rutaFiltrada', rutaFiltrada);
+    });
+  });
 });
 
 http.listen(80, '0.0.0.0', () => {
