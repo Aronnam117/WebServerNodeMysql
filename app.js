@@ -70,19 +70,32 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-app.get('/ruta', (req, res) => {
-  const fechaInicio = req.query.fechaInicio;
-  const horaInicio = req.query.horaInicio;
-  const fechaFin = req.query.fechaFin;
-  const horaFin = req.query.horaFin;
+app.get('/coordenadas', (req, res) => {
+  const query = 'SELECT * FROM coordenadas'; // Consulta SQL 
+  // Ejecutar la consulta en la base de datos
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los datos de la base de datos:', err);
+      res.status(500).send('Error al obtener los datos de la base de datos');
+      return;
+    }
+
+    // Enviar los datos obtenidos como respuesta en formato JSON
+    res.json(results);
+  });
+});
+
+// Filtrado de rutas por intervalo de tiempo
+app.get('/filtrar-rutas', (req, res) => {
+  const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
 
   const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= ? AND hora >= ? AND fecha <= ? AND hora <= ?`;
   const values = [fechaInicio, horaInicio, fechaFin, horaFin];
 
   db.query(query, values, (err, results) => {
     if (err) {
-      console.error('Error al obtener los datos de la base de datos:', err);
-      res.status(500).send('Error al obtener los datos de la base de datos');
+      console.error('Error al filtrar las rutas:', err);
+      res.status(500).send('Error al filtrar las rutas');
       return;
     }
 
