@@ -13,6 +13,15 @@
     <p id="fecha">Fecha: </p>
     <p id="hora">Hora: </p>
   </div>
+  <div>
+    <label for="fechaInicio">Fecha Inicio:</label>
+    <input type="date" id="fechaInicio">
+    <input type="time" id="horaInicio">
+    <label for="fechaFin">Fecha Fin:</label>
+    <input type="date" id="fechaFin">
+    <input type="time" id="horaFin">
+    <button onclick="filtrar()">Filtrar</button>
+  </div>
   <div id="mapa" style="height: 400px;"></div>
   <script>
     let marker; // Variable global para el marcador
@@ -62,7 +71,25 @@
         path.push(markerPosition);
       });
     }
+
+    function filtrar() {
+      const fechaInicio = document.getElementById('fechaInicio').value;
+      const horaInicio = document.getElementById('horaInicio').value;
+      const fechaFin = document.getElementById('fechaFin').value;
+      const horaFin = document.getElementById('horaFin').value;
+
+      const filtro = {
+        fechaInicio,
+        horaInicio,
+        fechaFin,
+        horaFin
+      };
+
+      // Enviar el filtro al servidor
+      const socket = io();
+      socket.emit('filtrarDatos', filtro);
+    }
   </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=API_KEY&callback=iniciarMap"></script>
 </body>
 </html>
