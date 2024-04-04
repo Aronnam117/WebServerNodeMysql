@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8">
   <title>Información Satelital</title>
-
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
 </head>
 <body>
@@ -13,17 +12,6 @@
     <p id="longitud">Longitud: </p>
     <p id="fecha">Fecha: </p>
     <p id="hora">Hora: </p>
-  </div>
-  <div>
-    <label for="fechaInicio">Fecha Inicio:</label>
-    <input type="date" id="fechaInicio">
-    <label for="horaInicio">Hora Inicio:</label>
-    <input type="time" id="horaInicio">
-    <label for="fechaFin">Fecha Fin:</label>
-    <input type="date" id="fechaFin">
-    <label for="horaFin">Hora Fin:</label>
-    <input type="time" id="horaFin">
-    <button onclick="filtrarRuta()">Filtrar</button>
   </div>
   <div id="mapa" style="height: 400px;"></div>
   <script>
@@ -47,46 +35,32 @@
         title: 'Ubicación actual',
       });
 
-      // Inicializar la polilínea
+      // Crear la polilínea
       polyline = new google.maps.Polyline({
         map: mapa,
         strokeColor: '#FF1111', // Color rojo brillante
         strokeOpacity: 1.0,
         strokeWeight: 2,
       });
-    }
 
-    function filtrarRuta() {
-      const fechaInicio = document.getElementById('fechaInicio').value;
-      const horaInicio = document.getElementById('horaInicio').value;
-      const fechaFin = document.getElementById('fechaFin').value;
-      const horaFin = document.getElementById('horaFin').value;
+      const socket = io();
 
-      // Construir la URL con los parámetros de filtrado
-      const url = `/ruta?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
+      socket.on('datosActualizados', (data) => {
+        // Actualizar la interfaz de usuario con los nuevos datos
+        document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
+        document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
+        document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
+        document.getElementById('hora').innerText = 'Hora: ' + data.hora;
 
-      // Realizar una solicitud GET al servidor
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          // Limpiar la polilínea anterior
-          polyline.setMap(null);
-          polyline = new google.maps.Polyline({
-            map: mapa,
-            strokeColor: '#FF1111', // Color rojo brillante
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-          });
+        // Actualizar posición del marcador
+        const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
+        marker.setPosition(markerPosition);
+        mapa.setCenter(markerPosition);
 
-          // Iterar sobre los puntos de la ruta y agregarlos a la polilínea
-          data.forEach(point => {
-            const latLng = new google.maps.LatLng(point.latitud, point.longitud);
-            polyline.getPath().push(latLng);
-          });
-        })
-        .catch(error => {
-          console.error('Error al obtener los datos:', error);
-        });
+        // Agregar punto a la polilínea
+        const path = polyline.getPath();
+        path.push(markerPosition);
+      });
     }
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
