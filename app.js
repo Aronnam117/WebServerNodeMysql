@@ -24,6 +24,7 @@ const db = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+ 
 });
 
 const ultimaInformacion = {
@@ -70,7 +71,27 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// No se necesita la ruta /coordenadas aquí
+app.get('/ruta', (req, res) => {
+  // Obtener los parámetros de filtrado de la URL
+  const fechaInicio = req.query.fechaInicio;
+  const horaInicio = req.query.horaInicio;
+  const fechaFin = req.query.fechaFin;
+  const horaFin = req.query.horaFin;
+
+  // Consultar la base de datos con los parámetros de filtrado
+  const query = `SELECT latitud, longitud FROM coordenadas WHERE fecha >= '${fechaInicio}' AND hora >= '${horaInicio}' AND fecha <= '${fechaFin}' AND hora <= '${horaFin}'`;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los datos de la base de datos:', err);
+      res.status(500).send('Error al obtener los datos de la base de datos');
+      return;
+    }
+
+    // Enviar los datos obtenidos como respuesta en formato JSON
+    res.json(results);
+  });
+});
 
 // Declarar iniciarMap como global
 function iniciarMap() {
@@ -114,3 +135,4 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 module.exports = app;
+//prueba
