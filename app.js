@@ -1,11 +1,14 @@
+const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const cors = require('cors');
 const mysql = require('mysql2');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   path: '/socket.io',
 });
+require('dotenv').config();
 
 // Configuración del servidor
 app.use(express.static(path.join(__dirname, 'public')));
@@ -124,7 +127,7 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 // Filtrado de rutas por intervalo de tiempo
-app.get('/filtrarRutas', (req, res) => {
+app.get('/', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
 
   const query = `SELECT latitud, longitud FROM coordenadas WHERE (fecha = ? AND hora >= ?) OR (fecha > ? AND fecha < ?)`;
