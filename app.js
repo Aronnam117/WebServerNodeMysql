@@ -62,13 +62,12 @@ udpServer.on('message', (msg, rinfo) => {
 udpServer.bind(10001, '0.0.0.0', () => {
   console.log('Servidor UDP escuchando en el puerto 10001');
 });
-
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
 app.get('/coordenadas', (req, res) => {
-  const query = 'SELECT * FROM coordenadas'; // Consulta SQL 
+  const query = 'SELECT * FROM coordenadas'; // Consulta SQL
   // Ejecutar la consulta en la base de datos
   db.query(query, (err, results) => {
     if (err) {
@@ -82,13 +81,13 @@ app.get('/coordenadas', (req, res) => {
   });
 });
 
-// Nueva ruta para manejar la solicitud de historial
+// Nueva ruta para manejar la solicitud de historial con filtros de fecha y hora
 app.get('/historial', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
 
   const query = `
-    SELECT latitud, longitud, fecha, hora 
-    FROM coordenadas 
+    SELECT latitud, longitud, fecha, hora
+    FROM coordenadas
     WHERE TIMESTAMP(CONCAT(fecha, ' ', hora)) BETWEEN ? AND ?
     ORDER BY id
   `;
@@ -101,7 +100,6 @@ app.get('/historial', (req, res) => {
       res.status(500).send('Error al obtener el historial');
       return;
     }
-
     res.json(results);
   });
 });
@@ -113,23 +111,23 @@ io.on('connection', (socket) => {
   // Manejar solicitud de filtrado de datos
   socket.on('filtrarDatos', (filtro) => {
     const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
-  
+
     const query = `
-      SELECT latitud, longitud, fecha, hora 
-      FROM coordenadas 
+      SELECT latitud, longitud, fecha, hora
+      FROM coordenadas
       WHERE TIMESTAMP(CONCAT(fecha, ' ', hora)) BETWEEN ? AND ?
       ORDER BY id
     `;
-  
+
     db.query(query, [`${fechaInicio} ${horaInicio}`, `${fechaFin} ${horaFin}`], (err, results) => {
       if (err) {
         console.error('Error al filtrar las rutas:', err);
         return;
       }
-  
+
       console.log('Se ha filtrado el historial correctamente.');
       console.log('Valores que cumplen con el filtro:', results);
-  
+
       socket.emit('rutaFiltrada', results);
     });
   });
@@ -148,7 +146,7 @@ io.on('connection', (socket) => {
           fecha: results[0].fecha,
           hora: results[0].hora
         };
-        
+
         socket.emit('datosActualizados', ultimaInformacion);
       }
     }
