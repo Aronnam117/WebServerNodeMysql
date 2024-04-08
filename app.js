@@ -199,6 +199,75 @@ http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
 });
 
+// Mover el código relacionado con Google Maps dentro de la función iniciarMap
+function iniciarMap() {
+  // Configuración del mapa
+  const mapOptions = {
+    center: { lat: 0, lng: 0 }, // Coordenadas iniciales
+    zoom: 12, // Nivel de zoom inicial
+  };
+
+  // Crear el mapa
+  const mapa = new google.maps.Map(document.getElementById('mapa'), mapOptions);
+
+  const socket = io();
+
+  socket.on('datosActualizados', (data) => {
+    // Actualizar la interfaz de usuario con los nuevos datos
+    document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
+    document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
+    document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
+    document.getElementById('hora').innerText = 'Hora: ' + data.hora;
+
+    // Crear un nuevo marcador
+    const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
+    const marker = new google.maps.Marker({
+      position: markerPosition,
+      map: mapa,
+      title: 'Ubicación actual',
+    });
+
+    // Agregar el marcador a la lista de marcadores
+    markers.push(marker);
+
+    // Zoom al marcador
+    mapa.setCenter(markerPosition);
+    mapa.setZoom(15);
+  });
+
+  socket.on('rutaFiltrada', (results) => {
+    // Limpiar los marcadores anteriores
+    markers.forEach(marker => marker.setMap(null));
+    markers = [];
+
+    // Iterar sobre los resultados y crear marcadores
+    results.forEach(dato => {
+      const punto = { lat: parseFloat(dato.latitud), lng: parseFloat(dato.longitud) };
+      const fechaHoraISO = dato.fecha + ' ' + dato.hora;
+      const fechaHora = new Date(fechaHoraISO);
+      const fechaHoraLegible = fechaHora.toLocaleString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true
+      });
+
+      const marker = new google.maps.Marker({
+        position: punto,
+        map: mapa,
+        title: `Estuvo aquí el ${fechaHoraLegible}`,
+      });
+
+      markers.push(marker);
+    });
+
+    console.log('Se ha filtrado el historial correctamente.');
+    console.log('Valores que cumplen con el filtro:', results);
+  });
+}
 
 module.exports = function() {
   return app;
