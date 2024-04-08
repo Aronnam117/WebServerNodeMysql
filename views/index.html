@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8">
   <title>Información Satelital</title>
-
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
 </head>
 <body>
@@ -13,6 +12,15 @@
     <p id="longitud">Longitud: </p>
     <p id="fecha">Fecha: </p>
     <p id="hora">Hora: </p>
+  </div>
+  <div>
+    <label for="fechaInicio">Fecha Inicio:</label>
+    <input type="date" id="fechaInicio">
+    <input type="time" id="horaInicio" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
+    <label for="fechaFin">Fecha Fin:</label>
+    <input type="date" id="fechaFin">
+    <input type="time" id="horaFin" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
+    <button onclick="filtrar()">Filtrar</button>
   </div>
   <div id="mapa" style="height: 400px;"></div>
   <script>
@@ -62,7 +70,48 @@
         const path = polyline.getPath();
         path.push(markerPosition);
       });
+
+      socket.on('rutaFiltrada', (ruta) => {
+        // Limpiar la polilínea existente
+        polyline.setMap(null);
+        
+        // Crear una nueva polilínea con la ruta filtrada
+        polyline = new google.maps.Polyline({
+          map: mapa,
+          path: ruta,
+          strokeColor: '#00FF00', // Color verde brillante para la nueva ruta
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        });
+      });
     }
+
+    function filtrar() {
+      const fechaInicio = document.getElementById('fechaInicio').value;
+      const horaInicio = document.getElementById('horaInicio').value;
+      const fechaFin = document.getElementById('fechaFin').value;
+      const horaFin = document.getElementById('horaFin').value;
+
+      // Enviar el filtro al servidor
+      const socket = io();
+      socket.emit('filtrarDatos', { fechaInicio, horaInicio, fechaFin, horaFin });
+
+      // Limpiar la polilínea existente
+      polyline.setMap(null);
+
+      // Escuchar la respuesta del servidor con la ruta filtrada
+      socket.on('rutaFiltrada', (ruta) => {
+        // Crear una nueva polilínea con la ruta filtrada
+        polyline = new google.maps.Polyline({
+          map: mapa,
+          path: ruta,
+          strokeColor: '#00FF00', // Color verde brillante para la nueva ruta
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        });
+      });
+    }
+
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>

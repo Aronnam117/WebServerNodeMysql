@@ -1,29 +1,26 @@
-const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const cors = require('cors');
 const mysql = require('mysql2');
-require('dotenv').config();
-
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   path: '/socket.io',
 });
 
-app.use(cors());
+// Configuración del servidor
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Crear el servidor UDP
 const dgram = require('dgram');
 const udpServer = dgram.createSocket('udp4');
 
+// Creación de la conexión a la base de datos
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+ 
 });
 
 const ultimaInformacion = {
@@ -85,7 +82,6 @@ app.get('/coordenadas', (req, res) => {
   });
 });
 
-
 // Declarar iniciarMap como global
 function iniciarMap() {
   // ...
@@ -93,12 +89,12 @@ function iniciarMap() {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Establecer conexión con los clientes
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  // Consulta SQL para obtener la última entrada de coordenadas
+  // Enviar los datos más recientes al cliente cuando se conecta
   const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
-
   // Ejecutar la consulta en la base de datos
   db.query(query, (err, results) => {
     if (err) {
@@ -111,20 +107,41 @@ io.on('connection', (socket) => {
         ultimaInformacion.longitud = results[0].longitud;
         ultimaInformacion.fecha = results[0].fecha;
         ultimaInformacion.hora = results[0].hora;
-
-        // Emitir los datos actualizados al cliente
+        
         socket.emit('datosActualizados', ultimaInformacion);
       }
     }
   });
 
+  // Manejar desconexión de clientes
   socket.on('disconnect', () => {
     console.log('Un cliente se ha desconectado');
   });
 });
 
+// Iniciar el servidor HTTP
 http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
 });
 
+// Filtrado de rutas por intervalo de tiempo
+app.get('/filtrarRutas', (req, res) => {
+  const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
+
+  const query = `SELECT latitud, longitud FROM coordenadas WHERE (fecha = ? AND hora >= ?) OR (fecha > ? AND fecha < ?)`;
+  const values = [fechaInicio, horaInicio, fechaFin, horaFin];
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.error('Error al filtrar las rutas:', err);
+      res.status(500).send('Error al filtrar las rutas');
+      return;
+    }
+
+    // Enviar la ruta filtrada al cliente
+    res.json(results);
+  });
+});
+
 module.exports = app;
+
