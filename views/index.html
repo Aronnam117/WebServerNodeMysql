@@ -30,6 +30,7 @@
   <div id="mapa"></div>
   <script>
     let markers = []; // Variable global para los marcadores
+    let polyline;
 
     function iniciarMap() {
       // Configuración del mapa
@@ -67,9 +68,25 @@
       });
 
       socket.on('rutaFiltrada', (results) => {
-        // Limpiar los marcadores anteriores
+        // Limpiar los marcadores anteriores y la polilínea
         markers.forEach(marker => marker.setMap(null));
         markers = [];
+        if (polyline) {
+          polyline.setMap(null);
+        }
+
+        // Crear una nueva polilínea
+        const path = results.map(dato => {
+          return { lat: parseFloat(dato.latitud), lng: parseFloat(dato.longitud) };
+        });
+        polyline = new google.maps.Polyline({
+          path: path,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+        polyline.setMap(mapa);
 
         // Iterar sobre los resultados y crear marcadores
         results.forEach(dato => {
@@ -113,6 +130,6 @@
       console.log('Filtrando historial...');
     }
   </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=iniciarMap"></script>
 </body>
 </html>

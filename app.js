@@ -82,6 +82,30 @@ app.get('/coordenadas', (req, res) => {
   });
 });
 
+// Nueva ruta para manejar la solicitud de historial
+app.get('/historial', (req, res) => {
+  const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
+
+  const query = `
+    SELECT latitud, longitud, fecha, hora 
+    FROM coordenadas 
+    WHERE TIMESTAMP(CONCAT(fecha, ' ', hora)) BETWEEN ? AND ?
+    ORDER BY id
+  `;
+
+  const values = [`${fechaInicio} ${horaInicio}`, `${fechaFin} ${horaFin}`];
+
+  db.query(query, values, (err, results) => {
+    if (err) {
+      console.error('Error al obtener el historial:', err);
+      res.status(500).send('Error al obtener el historial');
+      return;
+    }
+
+    res.json(results);
+  });
+});
+
 // Establecer conexión con los clientes
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
@@ -90,13 +114,6 @@ io.on('connection', (socket) => {
   socket.on('filtrarDatos', (filtro) => {
     const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
   
-    // Combina la fecha y la hora de inicio en una marca de tiempo completa
-    const marcaTiempoInicio = new Date(`${fechaInicio}T${horaInicio}`);
-  
-    // Combina la fecha y la hora de fin en una marca de tiempo completa
-    const marcaTiempoFin = new Date(`${fechaFin}T${horaFin}`);
-  
-    // Construir la consulta SQL para seleccionar todos los registros entre las marcas de tiempo de inicio y fin
     const query = `
       SELECT latitud, longitud, fecha, hora 
       FROM coordenadas 
@@ -104,8 +121,7 @@ io.on('connection', (socket) => {
       ORDER BY id
     `;
   
-    // Ejecutar la consulta en la base de datos
-    db.query(query, [marcaTiempoInicio, marcaTiempoFin], (err, results) => {
+    db.query(query, [`${fechaInicio} ${horaInicio}`, `${fechaFin} ${horaFin}`], (err, results) => {
       if (err) {
         console.error('Error al filtrar las rutas:', err);
         return;
@@ -114,21 +130,18 @@ io.on('connection', (socket) => {
       console.log('Se ha filtrado el historial correctamente.');
       console.log('Valores que cumplen con el filtro:', results);
   
-      // Enviar la ruta filtrada al cliente
       socket.emit('rutaFiltrada', results);
     });
   });
 
   // Enviar los datos más recientes al cliente cuando se conecta
   const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
-  // Ejecutar la consulta en la base de datos
+
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error al obtener los datos más recientes de la base de datos:', err);
     } else {
-      // Verificar si se obtuvieron resultados
       if (results.length > 0) {
-        // Asignar los datos más recientes al objeto ultimaInformacion
         ultimaInformacion = {
           latitud: results[0].latitud,
           longitud: results[0].longitud,
