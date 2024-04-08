@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial</title>
+    <style>
+        #mapa {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Historial de Coordenadas</h1>
+    <div id="mapa"></div>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY&callback=initMap" async defer></script>
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('mapa'), {
+                center: { lat: 0, lng: 0 },
+                zoom: 12
+            });
+
+            // Realizar solicitud al servidor para obtener el historial
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    if (this.status === 200) {
+                        var historial = JSON.parse(this.responseText);
+                        mostrarRuta(map, historial);
+                    } else {
+                        console.error('Error al obtener el historial:', this.status);
+                    }
+                }
+            };
+            xhr.open('GET', 'http://54.163.39.225/historial', true);
+            xhr.send();
+        }
+
+        function mostrarRuta(map, historial) {
+            // Crear la ruta con los datos del historial
+            var path = historial.map(function(coordenada) {
+                return { lat: parseFloat(coordenada.latitud), lng: parseFloat(coordenada.longitud) };
+            });
+
+            // Crear la polilínea
+            var ruta = new google.maps.Polyline({
+                path: path,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+
+            // Mostrar la polilínea en el mapa
+            ruta.setMap(map);
+        }
+    </script>
+</body>
+</html>
