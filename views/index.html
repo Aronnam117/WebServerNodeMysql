@@ -100,11 +100,11 @@
       polyline.setMap(null);
 
       // Escuchar la respuesta del servidor con la ruta filtrada
-      socket.on('rutaFiltrada', (ruta) => {
+      socket.on('rutaFiltrada', (results) => {
         // Crear una nueva polilínea con la ruta filtrada
         polyline = new google.maps.Polyline({
           map: mapa,
-          path: ruta,
+          path: results,
           strokeColor: '#00FF00', // Color verde brillante para la nueva ruta
           strokeOpacity: 1.0,
           strokeWeight: 2,
