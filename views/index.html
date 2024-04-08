@@ -4,6 +4,11 @@
   <meta charset="utf-8">
   <title>Información Satelital</title>
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
+  <style>
+    #mapa {
+      height: 400px;
+    }
+  </style>
 </head>
 <body>
   <h1>Información Satelital</h1>
@@ -22,10 +27,9 @@
     <input type="time" id="horaFin" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
     <button onclick="filtrar()">Filtrar</button>
   </div>
-  <div id="mapa" style="height: 400px;"></div>
+  <div id="mapa"></div>
   <script>
-    let marker; // Variable global para el marcador
-    let polyline; // Variable global para la polilínea
+    let markers = []; // Variable global para los marcadores
 
     function iniciarMap() {
       // Configuración del mapa
@@ -37,21 +41,6 @@
       // Crear el mapa
       const mapa = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 
-      // Crear el marcador
-      marker = new google.maps.Marker({
-        position: mapOptions.center,
-        map: mapa,
-        title: 'Ubicación actual',
-      });
-
-      // Crear la polilínea
-      polyline = new google.maps.Polyline({
-        map: mapa,
-        strokeColor: '#FF1111', // Color rojo brillante
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-      });
-
       const socket = io();
 
       socket.on('datosActualizados', (data) => {
@@ -61,38 +50,49 @@
         document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
         document.getElementById('hora').innerText = 'Hora: ' + data.hora;
 
-        // Actualizar posición del marcador
+        // Crear un nuevo marcador
         const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
-        marker.setPosition(markerPosition);
-        mapa.setCenter(markerPosition);
+        const marker = new google.maps.Marker({
+          position: markerPosition,
+          map: mapa,
+          title: 'Ubicación actual',
+        });
 
-        // Agregar punto a la polilínea
-        const path = polyline.getPath();
-        path.push(markerPosition);
-
-        // Actualizar la polilínea en el mapa
-        polyline.setPath(path);
+        // Agregar el marcador a la lista de marcadores
+        markers.push(marker);
 
         // Zoom al marcador
+        mapa.setCenter(markerPosition);
         mapa.setZoom(15);
       });
 
       socket.on('rutaFiltrada', (results) => {
-        // Limpiar la polilínea existente
-        polyline.setMap(null);
+        // Limpiar los marcadores anteriores
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
 
-        // Crear una nueva polilínea con la ruta filtrada
-        polyline = new google.maps.Polyline({
-          map: mapa,
-          strokeColor: '#00FF00', // Color verde brillante para la nueva ruta
-          strokeOpacity: 1.0,
-          strokeWeight: 2,
-        });
+        // Iterar sobre los resultados y crear marcadores
+        results.forEach(dato => {
+          const punto = { lat: parseFloat(dato.latitud), lng: parseFloat(dato.longitud) };
+          const fechaHoraISO = dato.fecha + ' ' + dato.hora;
+          const fechaHora = new Date(fechaHoraISO);
+          const fechaHoraLegible = fechaHora.toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true
+          });
 
-        // Iterar sobre los puntos de la ruta y agregarlos a la polilínea
-        results.forEach((punto) => {
-          const latlng = new google.maps.LatLng(parseFloat(punto.latitud), parseFloat(punto.longitud));
-          polyline.getPath().push(latlng);
+          const marker = new google.maps.Marker({
+            position: punto,
+            map: mapa,
+            title: `Estuvo aquí el ${fechaHoraLegible}`,
+          });
+
+          markers.push(marker);
         });
 
         console.log('Se ha filtrado el historial correctamente.');
