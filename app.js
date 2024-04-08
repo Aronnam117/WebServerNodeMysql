@@ -85,6 +85,13 @@ app.get('/coordenadas', (req, res) => {
 app.get('/historial', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
 
+  // Verificar que los parámetros no estén indefinidos
+  if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+    console.error('Al menos uno de los parámetros de fecha u hora está indefinido.');
+    res.status(400).send('Los parámetros de fecha y hora son obligatorios.');
+    return;
+  }
+
   const query = `
     SELECT latitud, longitud, fecha, hora
     FROM coordenadas
