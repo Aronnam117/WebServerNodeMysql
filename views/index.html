@@ -37,13 +37,6 @@
       // Crear el mapa
       const mapa = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 
-      // Crear el marcador
-      marker = new google.maps.Marker({
-        position: mapOptions.center,
-        map: mapa,
-        title: 'Ubicación actual',
-      });
-
       // Crear la polilínea
       polyline = new google.maps.Polyline({
         map: mapa,
@@ -63,8 +56,17 @@
 
         // Actualizar posición del marcador
         const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
-        marker.setPosition(markerPosition);
-        mapa.setCenter(markerPosition);
+        if (!marker) {
+          // Crear el marcador si no existe
+          marker = new google.maps.Marker({
+            position: markerPosition,
+            map: mapa,
+            title: 'Ubicación actual',
+          });
+        } else {
+          // Actualizar posición del marcador si ya existe
+          marker.setPosition(markerPosition);
+        }
 
         // Agregar punto a la polilínea
         const path = polyline.getPath();
@@ -88,7 +90,7 @@
 
         // Iterar sobre los puntos de la ruta y agregarlos a la polilínea
         results.forEach((punto) => {
-          const latlng = new google.maps.LatLng(punto.latitud, punto.longitud);
+          const latlng = new google.maps.LatLng(parseFloat(punto.latitud), parseFloat(punto.longitud));
           polyline.getPath().push(latlng);
         });
 
