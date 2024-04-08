@@ -99,21 +99,35 @@ io.on('connection', (socket) => {
   // Manejar solicitud de filtrado de datos
   socket.on('filtrarDatos', (filtro) => {
     const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
-    const query = `SELECT latitud, longitud FROM coordenadas WHERE ((fecha = ? AND hora >= ?) OR (fecha >= ? AND hora <= ?)) ORDER BY id`;
-
-    db.query(query, [fechaInicio, horaInicio, fechaFin, horaFin], (err, results) => {
-        if (err) {
-            console.error('Error al filtrar las rutas:', err);
-            return;
-        }
-
-        console.log('Se ha filtrado el historial correctamente.');
-        console.log('Valores que cumplen con el filtro:', results);
-
-        // Enviar la ruta filtrada al cliente
-        socket.emit('rutaFiltrada', results);
+  
+    // Combina la fecha y la hora de inicio en una marca de tiempo completa
+    const marcaTiempoInicio = new Date(`${fechaInicio}T${horaInicio}`);
+  
+    // Combina la fecha y la hora de fin en una marca de tiempo completa
+    const marcaTiempoFin = new Date(`${fechaFin}T${horaFin}`);
+  
+    // Construir la consulta SQL para seleccionar todos los registros entre las marcas de tiempo de inicio y fin
+    const query = `
+      SELECT latitud, longitud 
+      FROM coordenadas 
+      WHERE TIMESTAMP(fecha, hora) >= ? AND TIMESTAMP(fecha, hora) <= ?
+      ORDER BY id
+    `;
+  
+    // Ejecutar la consulta en la base de datos
+    db.query(query, [marcaTiempoInicio, marcaTiempoFin], (err, results) => {
+      if (err) {
+        console.error('Error al filtrar las rutas:', err);
+        return;
+      }
+  
+      console.log('Se ha filtrado el historial correctamente.');
+      console.log('Valores que cumplen con el filtro:', results);
+  
+      // Enviar la ruta filtrada al cliente
+      socket.emit('rutaFiltrada', results);
     });
-});
+  });
 
   // Enviar los datos más recientes al cliente cuando se conecta
   const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
