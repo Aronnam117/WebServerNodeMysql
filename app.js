@@ -99,13 +99,16 @@ io.on('connection', (socket) => {
   // Manejar solicitud de filtrado de datos
   socket.on('filtrarDatos', (filtro) => {
     const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
-    const query = `SELECT latitud, longitud FROM coordenadas WHERE ((fecha = ? AND hora >= ?) OR (fecha = ? AND hora < ?)) ORDER BY id`;
+    const query = `SELECT latitud, longitud FROM coordenadas WHERE ((fecha = ? AND hora >= ?) OR (fecha > ? AND fecha < ?)) ORDER BY id`;
 
     db.query(query, [fechaInicio, horaInicio, fechaFin, horaFin], (err, results) => {
         if (err) {
             console.error('Error al filtrar las rutas:', err);
             return;
         }
+
+        console.log('Se ha filtrado el historial correctamente.');
+        console.log('Valores que cumplen con el filtro:', results);
 
         // Enviar la ruta filtrada al cliente
         socket.emit('rutaFiltrada', results);
