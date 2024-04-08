@@ -125,7 +125,7 @@ io.on('connection', (socket) => {
 });
 
 http.listen(80, '0.0.0.0', () => {
-  console.log('Servidor web escuchando en el puerto 4000');
+  console.log('Servidor web escuchando en el puerto 80');
 });
 
 module.exports = app;
