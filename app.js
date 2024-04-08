@@ -126,22 +126,19 @@ http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
 });
 
-// Filtrado de rutas por intervalo de tiempo
-app.get('/', (req, res) => {
-  const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
+// Manejar solicitud de filtrado de datos
+socket.on('filtrarDatos', (filtro) => {
+  const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
+  const query = `SELECT latitud, longitud FROM coordenadas WHERE ((fecha = ? AND hora >= ?) OR (fecha > ? AND fecha < ?)) ORDER BY id`;
 
-  const query = `SELECT latitud, longitud FROM coordenadas WHERE (fecha = ? AND hora >= ?) OR (fecha > ? AND fecha < ?)`;
-  const values = [fechaInicio, horaInicio, fechaFin, horaFin];
+  db.query(query, [fechaInicio, horaInicio, fechaFin, horaFin], (err, results) => {
+      if (err) {
+          console.error('Error al filtrar las rutas:', err);
+          return;
+      }
 
-  db.query(query, values, (err, results) => {
-    if (err) {
-      console.error('Error al filtrar las rutas:', err);
-      res.status(500).send('Error al filtrar las rutas');
-      return;
-    }
-
-    // Enviar la ruta filtrada al cliente
-    res.json(results);
+      // Enviar la ruta filtrada al cliente
+      socket.emit('rutaFiltrada', results);
   });
 });
 
