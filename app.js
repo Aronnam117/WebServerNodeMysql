@@ -25,7 +25,7 @@ const db = mysql.createPool({
   database: process.env.DB_DATABASE,
 });
 
-const ultimaInformacion = {
+let ultimaInformacion = {
   latitud: 0,
   longitud: 0,
   fecha: '',
@@ -63,8 +63,6 @@ udpServer.bind(10001, '0.0.0.0', () => {
   console.log('Servidor UDP escuchando en el puerto 10001');
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
@@ -84,14 +82,6 @@ app.get('/coordenadas', (req, res) => {
   });
 });
 
-// Declarar iniciarMap como global
-function iniciarMap() {
-  // ...
-}
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Establecer conexión con los clientes
 // Establecer conexión con los clientes
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
@@ -108,9 +98,9 @@ io.on('connection', (socket) => {
   
     // Construir la consulta SQL para seleccionar todos los registros entre las marcas de tiempo de inicio y fin
     const query = `
-      SELECT latitud, longitud 
+      SELECT latitud, longitud, fecha, hora 
       FROM coordenadas 
-      WHERE TIMESTAMP(fecha, hora) >= ? AND TIMESTAMP(fecha, hora) <= ?
+      WHERE TIMESTAMP(CONCAT(fecha, ' ', hora)) BETWEEN ? AND ?
       ORDER BY id
     `;
   
@@ -125,7 +115,7 @@ io.on('connection', (socket) => {
       console.log('Valores que cumplen con el filtro:', results);
   
       // Enviar la ruta filtrada al cliente
-      socket.emit('rutaFiltrada', results); // Esta línea envía los resultados filtrados al cliente
+      socket.emit('rutaFiltrada', results);
     });
   });
 
@@ -139,10 +129,12 @@ io.on('connection', (socket) => {
       // Verificar si se obtuvieron resultados
       if (results.length > 0) {
         // Asignar los datos más recientes al objeto ultimaInformacion
-        ultimaInformacion.latitud = results[0].latitud;
-        ultimaInformacion.longitud = results[0].longitud;
-        ultimaInformacion.fecha = results[0].fecha;
-        ultimaInformacion.hora = results[0].hora;
+        ultimaInformacion = {
+          latitud: results[0].latitud,
+          longitud: results[0].longitud,
+          fecha: results[0].fecha,
+          hora: results[0].hora
+        };
         
         socket.emit('datosActualizados', ultimaInformacion);
       }
@@ -161,4 +153,3 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 module.exports = app;
-
