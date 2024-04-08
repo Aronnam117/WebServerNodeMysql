@@ -92,6 +92,7 @@ function iniciarMap() {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Establecer conexión con los clientes
+// Establecer conexión con los clientes
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
@@ -124,7 +125,7 @@ io.on('connection', (socket) => {
       console.log('Valores que cumplen con el filtro:', results);
   
       // Enviar la ruta filtrada al cliente
-      socket.emit('rutaFiltrada', results);
+      socket.emit('rutaFiltrada', results); // Esta línea envía los resultados filtrados al cliente
     });
   });
 

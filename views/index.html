@@ -88,15 +88,12 @@
 
         // Iterar sobre los puntos de la ruta y agregarlos a la polilínea
         results.forEach((punto) => {
-          const latlng = new google.maps.LatLng(punto.latitud, punto.longitud);
+          const latlng = new google.maps.LatLng(parseFloat(punto.latitud), parseFloat(punto.longitud));
           polyline.getPath().push(latlng);
         });
 
         console.log('Se ha filtrado el historial correctamente.');
         console.log('Valores que cumplen con el filtro:', results);
-
-        // Redirigir al usuario a la página mapafiltrado.html
-        window.location.href = '/mapafiltrado.html';
       });
     }
 
