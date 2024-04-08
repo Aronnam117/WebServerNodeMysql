@@ -26,6 +26,7 @@
   <script>
     let marker; // Variable global para el marcador
     let polyline; // Variable global para la polilínea
+    let mapa; // Variable global para el mapa
 
     function iniciarMap() {
       // Configuración del mapa
@@ -35,7 +36,7 @@
       };
 
       // Crear el mapa
-      const mapa = new google.maps.Map(document.getElementById('mapa'), mapOptions);
+      mapa = new google.maps.Map(document.getElementById('mapa'), mapOptions);
 
       // Crear el marcador
       marker = new google.maps.Marker({
@@ -55,29 +56,29 @@
       const socket = io();
 
       socket.on('datosActualizados', (data) => {
-    // Actualizar la interfaz de usuario con los nuevos datos
-    document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
-    document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
-    document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
-    document.getElementById('hora').innerText = 'Hora: ' + data.hora;
+        // Actualizar la interfaz de usuario con los nuevos datos
+        document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
+        document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
+        document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
+        document.getElementById('hora').innerText = 'Hora: ' + data.hora;
 
-    // Actualizar posición del marcador
-    const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
-    marker.setPosition(markerPosition);
-    mapa.setCenter(markerPosition);
+        // Actualizar posición del marcador
+        const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
+        marker.setPosition(markerPosition);
+        mapa.setCenter(markerPosition);
 
-    // Agregar punto a la polilínea
-    const path = polyline.getPath();
-    path.push(markerPosition);
+        // Agregar punto a la polilínea
+        const path = polyline.getPath();
+        path.push(markerPosition);
 
-    // Actualizar la polilínea en el mapa
-    polyline.setPath(path);
-});
+        // Actualizar la polilínea en el mapa
+        polyline.setPath(path);
+      });
 
       socket.on('rutaFiltrada', (ruta) => {
         // Limpiar la polilínea existente
         polyline.setMap(null);
-        
+
         // Crear una nueva polilínea con la ruta filtrada
         polyline = new google.maps.Polyline({
           map: mapa,
@@ -95,15 +96,12 @@
       const fechaFin = document.getElementById('fechaFin').value;
       const horaFin = document.getElementById('horaFin').value;
 
-      // Enviar el filtro al servidor
-      const socket = io();
-      socket.emit('filtrarDatos', { fechaInicio, horaInicio, fechaFin, horaFin });
-
-      // Limpiar la polilínea existente
-      polyline.setMap(null);
-
       // Escuchar la respuesta del servidor con la ruta filtrada
+      const socket = io();
       socket.on('rutaFiltrada', (results) => {
+        // Limpiar la polilínea existente
+        polyline.setMap(null);
+
         // Crear una nueva polilínea con la ruta filtrada
         polyline = new google.maps.Polyline({
           map: mapa,
@@ -113,8 +111,10 @@
           strokeWeight: 2,
         });
       });
-    }
 
+      // Enviar el filtro al servidor
+      socket.emit('filtrarDatos', { fechaInicio, horaInicio, fechaFin, horaFin });
+    }
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
