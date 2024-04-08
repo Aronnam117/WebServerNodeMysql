@@ -84,6 +84,19 @@ app.get('/coordenadas', (req, res) => {
   });
 });
 
+// Ruta para manejar la solicitud de filtrado y redirigir al usuario a mapafiltrado
+app.post('/filtrar', (req, res) => {
+  const { fechaInicio, horaInicio, fechaFin, horaFin } = req.body;
+  // Realizar el filtrado y obtener los resultados filtrados de la base de datos
+  // Luego, redirigir al usuario a la página mapafiltrado
+  res.redirect('/mapafiltrado');
+});
+
+// Ruta para servir la página mapafiltrado.html
+app.get('/mapafiltrado', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'mapafiltrado.html'));
+});
+
 // Declarar iniciarMap como global
 function iniciarMap() {
   // ...
@@ -158,6 +171,11 @@ io.on('connection', (socket) => {
 // Iniciar el servidor HTTP
 http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
+});
+
+// Iniciar el servidor
+http.listen(PORT, () => {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
 
 module.exports = app;
