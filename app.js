@@ -116,6 +116,53 @@ io.on('connection', (socket) => {
   
       // Enviar la ruta filtrada al cliente
       socket.emit('rutaFiltrada', results);
+      
+      socket.on('rutaFiltrada', (results) => {
+        // Limpiar los marcadores anteriores
+        markers.forEach(marker => marker.setMap(null));
+        markers = [];
+      
+        // Crear una nueva polilínea con la ruta filtrada
+        polyline = new google.maps.Polyline({
+          map: mapa,
+          strokeColor: '#00FF00', // Color verde brillante para la nueva ruta
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        });
+      
+        // Iterar sobre los resultados y crear marcadores
+        results.forEach(dato => {
+          const punto = { lat: parseFloat(dato.latitud), lng: parseFloat(dato.longitud) };
+          const fechaHoraISO = dato.fecha + ' ' + dato.hora;
+          const fechaHora = new Date(fechaHoraISO);
+          const fechaHoraLegible = fechaHora.toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true
+          });
+      
+          const marker = new google.maps.Marker({
+            position: punto,
+            map: mapa,
+            title: `Estuvo aquí el ${fechaHoraLegible}`,
+          });
+      
+          markers.push(marker);
+      
+          // Agregar el punto a la polilínea
+          polyline.getPath().push(new google.maps.LatLng(punto.lat, punto.lng));
+        });
+      
+        // Agregar la polilínea al mapa
+        polyline.setMap(mapa);
+      
+        console.log('Se ha filtrado el historial correctamente.');
+        console.log('Valores que cumplen con el filtro:', results);
+      });
     });
   });
 
