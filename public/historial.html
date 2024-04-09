@@ -18,6 +18,11 @@
     Fecha Fin: <input type="date" id="fechaFin">
     Hora Fin: <input type="time" id="horaFin" step="1">
     <button onclick="filtrarHistorial()">Filtrar</button>
+    <h2>Filtrar por Posición</h2>
+    Latitud: <input type="text" id="latitudFiltro">
+    Longitud: <input type="text" id="longitudFiltro">
+    <button onclick="filtrarPorPosicion()">Filtrar por Posición</button>
+    <p id="infoPosicion">Fecha y Hora de paso: No disponible</p>
   </div>
   <div id="mapa"></div>
 
@@ -59,6 +64,33 @@
     dibujarRuta(results);
   }
 });
+
+function filtrarPorPosicion() {
+  const latitud = document.getElementById('latitudFiltro').value;
+  const longitud = document.getElementById('longitudFiltro').value;
+
+  if (!latitud || !longitud) {
+    alert('Por favor, ingrese la latitud y longitud.');
+    return;
+  }
+
+  const socket = io.connect();
+  socket.emit('filtrarPorPosicion', {
+    latitud: parseFloat(latitud),
+    longitud: parseFloat(longitud)
+  });
+
+  // Escuchar la respuesta del servidor
+  socket.on('posicionFiltrada', function(resultado) {
+    const infoPosicion = document.getElementById('infoPosicion');
+    if (resultado.fecha && resultado.hora) {
+      infoPosicion.textContent = `Fecha y Hora de paso: ${resultado.fecha} ${resultado.hora}`;
+      // Si deseas centrar el mapa en esta posición, puedes hacerlo aquí
+    } else {
+      infoPosicion.textContent = 'Fecha y Hora de paso: No disponible';
+    }
+  });
+}
 
     }
 
