@@ -6,8 +6,6 @@ const http = require('http');
 const socketIo = require('socket.io');
 require('dotenv').config();
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -77,7 +75,6 @@ app.get('/historial', (req, res) => {
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  // Enviar la última ubicación al cliente que se acaba de conectar
   const queryUltimaUbicacion = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
   db.query(queryUltimaUbicacion, (err, results) => {
     if (err) {
@@ -98,4 +95,5 @@ server.listen(PORT, () => {
   console.log(`Servidor web escuchando en el puerto ${PORT}`);
 });
 
-module.exports = app;
+// Esto ya no es necesario si no utilizas este objeto en otro lugar
+// module.exports = app;
