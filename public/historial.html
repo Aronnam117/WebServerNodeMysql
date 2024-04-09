@@ -14,13 +14,12 @@
   <h1>Historial de Coordenadas</h1>
   <div>
     <label for="fechaInicio">Fecha Inicio:</label>
-    <input type="date" id="fechaInicio">
-    <label for="horaInicio">Hora Inicio (HH:MM:SS):</label>
-    <input type="time" id="horaInicio" step="1">
-    <label for="fechaFin">Fecha Fin:</label>
-    <input type="date" id="fechaFin">
-    <label for="horaFin">Hora Fin (HH:MM:SS):</label>
-    <input type="time" id="horaFin" step="1">
+  <input type="date" id="fechaInicio">
+  <input type="time" id="horaInicio" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
+  <label for="fechaFin">Fecha Fin:</label>
+  <input type="date" id="fechaFin">
+  <input type="time" id="horaFin" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
+  <button onclick="validarYFiltrar()">Filtrar</button>
     <button onclick="filtrarHistorial()">Filtrar</button>
   </div>
   <div id="mapa"></div>
@@ -28,23 +27,25 @@
     let mapa; // Variable global para el mapa
     let ruta; // Variable global para la polilínea
 
-    function filtrarHistorial() {
-      const fechaInicio = document.getElementById('fechaInicio').value;
-      const horaInicio = document.getElementById('horaInicio').value + ':00'; // Añadir segundos
-      const fechaFin = document.getElementById('fechaFin').value;
-      const horaFin = document.getElementById('horaFin').value + ':00'; // Añadir segundos
+    function filtrar() {
+  const fechaInicio = document.getElementById('fechaInicio').value;
+  const horaInicio = document.getElementById('horaInicio').value;
+  const fechaFin = document.getElementById('fechaFin').value;
+  const horaFin = document.getElementById('horaFin').value;
 
-      if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
-        alert('Por favor, complete todos los campos de fecha y hora.');
-        return;
-      }
-      const socket = io();
-  socket.emit('filtrarDatos', {
-    fechaInicio: fechaInicio,
-    horaInicio: horaInicio,
-    fechaFin: fechaFin,
-    horaFin: horaFin
-  });
+  console.log('Fecha de inicio:', fechaInicio);
+  console.log('Hora de inicio:', horaInicio);
+  console.log('Fecha de fin:', fechaFin);
+  console.log('Hora de fin:', horaFin);
+
+  // Enviar el filtro al servidor
+  const socket = io();
+  socket.emit('filtrarDatos', { fechaInicio, horaInicio, fechaFin, horaFin });
+
+  console.log('Filtrando historial...');
+}
+
+   
 
   // Escuchar el evento de respuesta del socket con los datos filtrados
   socket.on('rutaFiltrada', (results) => {
@@ -67,7 +68,7 @@
         .catch(error => {
           console.error('Error al obtener el historial:', error);
         });
-    }
+    
 
     function initMap() {
       mapa = new google.maps.Map(document.getElementById('mapa'), {
