@@ -12,11 +12,23 @@
 </head>
 <body>
     <h1>Historial de Coordenadas</h1>
+    <div>
+        Fecha Inicio: <input type="date" id="fechaInicio">
+        Hora Inicio: <input type="time" id="horaInicio">
+        Fecha Fin: <input type="date" id="fechaFin">
+        Hora Fin: <input type="time" id="horaFin">
+        <button onclick="initMap()">Filtrar</button>
+    </div>
     <div id="mapa"></div>
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
     <script>
         function initMap() {
+            var fechaInicio = document.getElementById('fechaInicio').value;
+            var horaInicio = document.getElementById('horaInicio').value;
+            var fechaFin = document.getElementById('fechaFin').value;
+            var horaFin = document.getElementById('horaFin').value;
+            var url = `http://54.163.39.225/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
+
             var map = new google.maps.Map(document.getElementById('mapa'), {
                 center: { lat: 0, lng: 0 },
                 zoom: 12
@@ -34,28 +46,27 @@
                     }
                 }
             };
-            xhr.open('GET', 'http://54.163.39.225/historial', true);
+            xhr.open('GET', url, true);
             xhr.send();
         }
 
         function mostrarRuta(map, historial) {
-            // Crear la ruta con los datos del historial
-            var path = historial.map(function(coordenada) {
-                return { lat: parseFloat(coordenada.latitud), lng: parseFloat(coordenada.longitud) };
-            });
+  // Asegúrate de que estás accediendo correctamente a las propiedades
+  var path = historial.map(function(coordenada) {
+    return { lat: parseFloat(coordenada.latitud), lng: parseFloat(coordenada.longitud) };
+  });
 
-            // Crear la polilínea
-            var ruta = new google.maps.Polyline({
-                path: path,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
+  var ruta = new google.maps.Polyline({
+    path: path,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+  });
 
-            // Mostrar la polilínea en el mapa
-            ruta.setMap(map);
-        }
+  ruta.setMap(map);
+}
     </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_API&callback=initMap"></script>
 </body>
 </html>
