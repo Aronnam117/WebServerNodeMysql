@@ -51,7 +51,8 @@ app.get('/', (req, res) => {
 
 app.get('/historial', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
-  
+
+  console.log(fechaInicio, horaInicio, fechaFin, horaFin); // Añade esto para depurar
   const query = `
     SELECT latitud, longitud, fecha, hora
     FROM coordenadas

@@ -23,11 +23,11 @@
 
     <script>
         function initMap() {
-            var fechaInicio = document.getElementById('fechaInicio').value;
-            var horaInicio = document.getElementById('horaInicio').value;
-            var fechaFin = document.getElementById('fechaFin').value;
-            var horaFin = document.getElementById('horaFin').value;
-            var url = `http://54.163.39.225/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
+    var fechaInicio = document.getElementById('fechaInicio').value;
+    var horaInicio = document.getElementById('horaInicio').value + ":00"; // Asegura que se añadan segundos
+    var fechaFin = document.getElementById('fechaFin').value;
+    var horaFin = document.getElementById('horaFin').value + ":00"; // Asegura que se añadan segundos
+    var url = `http://54.163.39.225/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
 
             var map = new google.maps.Map(document.getElementById('mapa'), {
                 center: { lat: 0, lng: 0 },
@@ -67,6 +67,6 @@
   ruta.setMap(map);
 }
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_API&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
 </html>
