@@ -120,28 +120,27 @@ app.get('/historial', (req, res) => {
 io.on('connection', (socket) => {
   console.log('Un cliente se ha conectado');
 
-  // Manejar solicitud de filtrado de datos
   socket.on('filtrarDatos', (filtro) => {
     const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
-
-    const query = `
-      SELECT latitud, longitud, fecha, hora
-      FROM coordenadas
-      WHERE TIMESTAMP(CONCAT(fecha, ' ', hora)) BETWEEN ? AND ?
-      ORDER BY id
-    `;
-
-    db.query(query, [`${fechaInicio} ${horaInicio}`, `${fechaFin} ${horaFin}`], (err, results) => {
-      if (err) {
-        console.error('Error al filtrar las rutas:', err);
-        return;
-      }
-
-      console.log('Se ha filtrado el historial correctamente.');
-      console.log('Valores que cumplen con el filtro:', results);
-
-      socket.emit('rutaFiltrada', results);
-    });
+    // Asegúrate de que estas variables no sean undefined
+    if (fechaInicio && horaInicio && fechaFin && horaFin) {
+      const query = `
+        SELECT latitud, longitud, fecha, hora
+        FROM coordenadas
+        WHERE TIMESTAMP(CONCAT(fecha, ' ', hora)) BETWEEN ? AND ?
+        ORDER BY id
+      `;
+      db.query(query, [`${fechaInicio} ${horaInicio}`, `${fechaFin} ${horaFin}`], (err, results) => {
+        if (err) {
+          console.error('Error al filtrar las rutas:', err);
+          socket.emit('errorEnFiltrado', 'Error al filtrar las rutas');
+        } else {
+          console.log('Se ha filtrado el historial correctamente.');
+          console.log('Valores que cumplen con el filtro:', results);
+          socket.emit('rutaFiltrada', results);
+        }
+      });
+    }
   });
 
   function dibujarRuta(historial) {

@@ -13,92 +13,87 @@
 <body>
   <h1>Historial de Coordenadas</h1>
   <div>
-    <label for="fechaInicio">Fecha Inicio:</label>
-  <input type="date" id="fechaInicio">
-  <input type="time" id="horaInicio" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
-  <label for="fechaFin">Fecha Fin:</label>
-  <input type="date" id="fechaFin">
-  <input type="time" id="horaFin" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
-  <button onclick="validarYFiltrar()">Filtrar</button>
+    Fecha Inicio: <input type="date" id="fechaInicio">
+    Hora Inicio: <input type="time" id="horaInicio" step="1">
+    Fecha Fin: <input type="date" id="fechaFin">
+    Hora Fin: <input type="time" id="horaFin" step="1">
     <button onclick="filtrarHistorial()">Filtrar</button>
   </div>
   <div id="mapa"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
   <script>
-    let mapa; // Variable global para el mapa
-    let ruta; // Variable global para la polilínea
+    let mapa;
+    let ruta;
 
-    function filtrar() {
-  const fechaInicio = document.getElementById('fechaInicio').value;
-  const horaInicio = document.getElementById('horaInicio').value;
-  const fechaFin = document.getElementById('fechaFin').value;
-  const horaFin = document.getElementById('horaFin').value;
+    // Esta función se llama cuando el usuario hace clic en "Filtrar"
+    function filtrarHistorial() {
+      var fechaInicio = document.getElementById('fechaInicio').value;
+      var horaInicio = document.getElementById('horaInicio').value;
+      var fechaFin = document.getElementById('fechaFin').value;
+      var horaFin = document.getElementById('horaFin').value;
 
-  console.log('Fecha de inicio:', fechaInicio);
-  console.log('Hora de inicio:', horaInicio);
-  console.log('Fecha de fin:', fechaFin);
-  console.log('Hora de fin:', horaFin);
+      if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+        alert('Por favor, complete todos los campos de fecha y hora.');
+        return;
+      }
 
-  // Enviar el filtro al servidor
-  const socket = io();
-  socket.emit('filtrarDatos', { fechaInicio, horaInicio, fechaFin, horaFin });
+      // Establece una conexión WebSocket y envía los datos de filtrado
+      var socket = io.connect();
+      socket.emit('filtrarDatos', {
+        fechaInicio: fechaInicio,
+        horaInicio: horaInicio,
+        fechaFin: fechaFin,
+        horaFin: horaFin
+      });
 
-  console.log('Filtrando historial...');
-}
+      // Escucha la respuesta del servidor y actualiza el mapa
+      socket.on('rutaFiltrada', function(results) {
+        if (results.length === 0) {
+          alert('No se encontraron datos para el rango especificado.');
+        } else {
+          dibujarRuta(results);
+        }
+      });
+    }
 
-   
-
-  // Escuchar el evento de respuesta del socket con los datos filtrados
-  socket.on('rutaFiltrada', (results) => {
-    console.log('Datos filtrados recibidos:', results);
-    dibujarRuta(results);
-  });
-
-
-      const url = `/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
-
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          if (data && data.length > 0) {
-            dibujarRuta(data); // Llamada a la función que dibuja la ruta en el mapa
-          } else {
-            alert('No se encontraron datos para el rango especificado.');
-          }
-        })
-        .catch(error => {
-          console.error('Error al obtener el historial:', error);
-        });
-    
-
+    // Inicializa el mapa de Google Maps
     function initMap() {
       mapa = new google.maps.Map(document.getElementById('mapa'), {
         zoom: 12,
         center: { lat: 0, lng: 0 } // Centro inicial del mapa
       });
-      ruta = new google.maps.Polyline({
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-        map: mapa
-      });
     }
 
-    function dibujarRuta(historial) {
-      const coordenadas = historial.map(punto => ({
+    // Dibuja la ruta en el mapa a partir de los datos de la base de datos
+    function dibujarRuta(datos) {
+      const coordenadas = datos.map(punto => ({
         lat: parseFloat(punto.latitud),
         lng: parseFloat(punto.longitud)
       }));
-      ruta.setPath(coordenadas);
 
+      if (ruta) {
+        ruta.setMap(null); // Limpia la ruta anterior si existe
+      }
+
+      ruta = new google.maps.Polyline({
+        path: coordenadas,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
+
+      ruta.setMap(mapa);
       if (coordenadas.length > 0) {
         mapa.setCenter(coordenadas[0]); // Centra el mapa en la primera coordenada
       }
     }
 
-    // Asegúrate de que la clave de API de Google Maps es correcta y de que está habilitada para tu dominio
+    window.initMap = initMap; // Hace que initMap sea global para que la API de Google Maps pueda invocarla
   </script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=initMap"></script>
+  <!-- Asegúrate de que la clave de API de Google Maps sea válida y esté autorizada para tu dominio -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  </script>
 </body>
 </html>
