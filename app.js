@@ -25,51 +25,65 @@ const db = mysql.createPool({
   database: process.env.DB_DATABASE,
 });
 
+let ultimaInformacion = {
+  latitud: 0,
+  longitud: 0,
+  fecha: '',
+  hora: '',
+};
+
 udpServer.on('message', (msg, rinfo) => {
   const data = msg.toString();
+  console.log('Datos recibidos:', data);
+
   const [latitud, longitud, fecha, hora] = data.split(' ');
 
+  console.log('Latitud:', latitud);
+  console.log('Longitud:', longitud);
+  console.log('Fecha:', fecha);
+  console.log('Hora:', hora);
+
   const query = 'INSERT INTO coordenadas (latitud, longitud, fecha, hora) VALUES (?, ?, ?, ?)';
+
   const values = [latitud, longitud, fecha, hora];
+  console.log('Query:', query);
 
   db.query(query, values, (err, results) => {
     if (err) {
       console.error('Error al insertar datos en la base de datos:', err);
     } else {
       console.log('Datos insertados en la base de datos');
-      io.emit('datosActualizados', { latitud, longitud, fecha, hora });
     }
   });
+
+  io.emit('datosActualizados', { latitud, longitud, fecha, hora });
 });
 
-udpServer.bind(10001, () => {
+udpServer.bind(10001, '0.0.0.0', () => {
   console.log('Servidor UDP escuchando en el puerto 10001');
 });
-
-// Rutas
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
 app.get('/coordenadas', (req, res) => {
-  const query = 'SELECT * FROM coordenadas';
+  const query = 'SELECT * FROM coordenadas'; // Consulta SQL
+  // Ejecutar la consulta en la base de datos
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error al obtener los datos de la base de datos:', err);
       res.status(500).send('Error al obtener los datos de la base de datos');
-    } else {
-      res.json(results);
+      return;
     }
+
+    // Enviar los datos obtenidos como respuesta en formato JSON
+    res.json(results);
   });
 });
 
+// Nueva ruta para manejar la solicitud de historial con filtros de fecha y hora
 app.get('/historial', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
-
-  if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
-    // Si no se proporcionan parámetros, simplemente sirve la página historial.html
-    return res.sendFile(path.join(__dirname, 'public', 'historial.html'));
-  }
 
   const query = `
     SELECT latitud, longitud, fecha, hora
@@ -77,27 +91,78 @@ app.get('/historial', (req, res) => {
     WHERE TIMESTAMP(CONCAT(fecha, ' ', hora)) BETWEEN ? AND ?
     ORDER BY id
   `;
+
   const values = [`${fechaInicio} ${horaInicio}`, `${fechaFin} ${horaFin}`];
 
   db.query(query, values, (err, results) => {
     if (err) {
       console.error('Error al obtener el historial:', err);
       res.status(500).send('Error al obtener el historial');
-    } else {
-      res.json(results);
+      return;
     }
+
+    // Renderizar la página HTML con el mapa y la ruta
+    res.render('historial', { data: results });
+  });
+});
+// Establecer conexión con los clientes
+io.on('connection', (socket) => {
+  console.log('Un cliente se ha conectado');
+
+  // Manejar solicitud de filtrado de datos
+  socket.on('filtrarDatos', (filtro) => {
+    const { fechaInicio, horaInicio, fechaFin, horaFin } = filtro;
+
+    const query = `
+      SELECT latitud, longitud, fecha, hora
+      FROM coordenadas
+      WHERE TIMESTAMP(CONCAT(fecha, ' ', hora)) BETWEEN ? AND ?
+      ORDER BY id
+    `;
+
+    db.query(query, [`${fechaInicio} ${horaInicio}`, `${fechaFin} ${horaFin}`], (err, results) => {
+      if (err) {
+        console.error('Error al filtrar las rutas:', err);
+        return;
+      }
+
+      console.log('Se ha filtrado el historial correctamente.');
+      console.log('Valores que cumplen con el filtro:', results);
+
+      socket.emit('rutaFiltrada', results);
+    });
+  });
+
+  // Enviar los datos más recientes al cliente cuando se conecta
+  const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los datos más recientes de la base de datos:', err);
+    } else {
+      if (results.length > 0) {
+        ultimaInformacion = {
+          latitud: results[0].latitud,
+          longitud: results[0].longitud,
+          fecha: results[0].fecha,
+          hora: results[0].hora
+        };
+
+        socket.emit('datosActualizados', ultimaInformacion);
+      }
+    }
+  });
+
+  // Manejar desconexión de clientes
+  socket.on('disconnect', () => {
+    console.log('Un cliente se ha desconectado');
   });
 });
 
-// Iniciar el servidor HTTP en el puerto 80
+// Iniciar el servidor HTTP
 http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
 });
-
-// Esto es redundante si estás usando http.listen arriba para iniciar tu servidor con Socket.io
-// app.listen(3000, () => {
-//   console.log('Servidor escuchando en el puerto 3000');
-// });
 
 // Exportar la aplicación Express
 module.exports = app;
