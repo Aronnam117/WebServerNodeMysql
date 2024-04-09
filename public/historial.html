@@ -15,40 +15,39 @@
   <div>
     <label for="fechaInicio">Fecha Inicio:</label>
     <input type="date" id="fechaInicio">
-    <label for="horaInicio">Hora Inicio (HH:MM:SS):</label>
     <input type="time" id="horaInicio" step="1">
     <label for="fechaFin">Fecha Fin:</label>
     <input type="date" id="fechaFin">
-    <label for="horaFin">Hora Fin (HH:MM:SS):</label>
     <input type="time" id="horaFin" step="1">
     <button onclick="filtrarHistorial()">Filtrar</button>
   </div>
   <div id="mapa"></div>
   <script>
-    let mapa; // Variable global para el mapa
-    let ruta; // Variable global para la polilínea
+    var mapa; // Variable global para el mapa
+    var ruta; // Variable global para la polilínea
 
     function filtrarHistorial() {
-      const fechaInicio = document.getElementById('fechaInicio').value;
-      const horaInicio = document.getElementById('horaInicio').value + ':00'; // Añadir segundos
-      const fechaFin = document.getElementById('fechaFin').value;
-      const horaFin = document.getElementById('horaFin').value + ':00'; // Añadir segundos
+    var fechaInicio = document.getElementById('fechaInicio').value;
+    var horaInicio = document.getElementById('horaInicio').value;
+    var fechaFin = document.getElementById('fechaFin').value;
+    var horaFin = document.getElementById('horaFin').value;
 
-      if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+    // Imprimir valores para depuración
+    console.log(fechaInicio, horaInicio, fechaFin, horaFin);
+
+    if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
         alert('Por favor, complete todos los campos de fecha y hora.');
         return;
-      }
+    }
 
+      // Construimos la URL con los parámetros de consulta para el filtrado
       const url = `/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
 
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          if (data && data.length > 0) {
-            dibujarRuta(data); // Llamada a la función que dibuja la ruta en el mapa
-          } else {
-            alert('No se encontraron datos para el rango especificado.');
-          }
+          console.log('Datos filtrados:', data); // Aquí puedes ver los datos filtrados en la consola
+          dibujarRuta(data); // Llamada a la función que dibuja la ruta en el mapa
         })
         .catch(error => {
           console.error('Error al obtener el historial:', error);
