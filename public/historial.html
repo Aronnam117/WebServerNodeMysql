@@ -10,7 +10,7 @@
     }
   </style>
 </head>
-<body>
+<body onload="initMap()">
   <h1>Historial de Coordenadas</h1>
   <div>
     Fecha Inicio: <input type="date" id="fechaInicio">
@@ -26,38 +26,6 @@
     let mapa;
     let ruta;
 
-    // Esta función se llama cuando el usuario hace clic en "Filtrar"
-    function filtrarHistorial() {
-      var fechaInicio = document.getElementById('fechaInicio').value;
-      var horaInicio = document.getElementById('horaInicio').value;
-      var fechaFin = document.getElementById('fechaFin').value;
-      var horaFin = document.getElementById('horaFin').value;
-
-      if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
-        alert('Por favor, complete todos los campos de fecha y hora.');
-        return;
-      }
-
-      // Establece una conexión WebSocket y envía los datos de filtrado
-      var socket = io.connect();
-      socket.emit('filtrarDatos', {
-        fechaInicio: fechaInicio,
-        horaInicio: horaInicio,
-        fechaFin: fechaFin,
-        horaFin: horaFin
-      });
-
-      // Escucha la respuesta del servidor y actualiza el mapa
-      socket.on('rutaFiltrada', function(results) {
-        if (results.length === 0) {
-          alert('No se encontraron datos para el rango especificado.');
-        } else {
-          dibujarRuta(results);
-        }
-      });
-    }
-
-    // Inicializa el mapa de Google Maps
     function initMap() {
       mapa = new google.maps.Map(document.getElementById('mapa'), {
         zoom: 12,
@@ -65,16 +33,35 @@
       });
     }
 
-    // Dibuja la ruta en el mapa a partir de los datos de la base de datos
+    function filtrarHistorial() {
+      const fechaInicio = document.getElementById('fechaInicio').value;
+      const horaInicio = document.getElementById('horaInicio').value;
+      const fechaFin = document.getElementById('fechaFin').value;
+      const horaFin = document.getElementById('horaFin').value;
+
+      if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+        alert('Por favor, complete todos los campos de fecha y hora.');
+        return;
+      }
+
+      // Asegúrate de que la URL apunte a tu servidor donde manejas la lógica de filtrado
+      const url = `/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(datos => {
+          dibujarRuta(datos);
+        })
+        .catch(error => console.error('Error al obtener el historial:', error));
+    }
+
     function dibujarRuta(datos) {
       const coordenadas = datos.map(punto => ({
         lat: parseFloat(punto.latitud),
         lng: parseFloat(punto.longitud)
       }));
 
-      if (ruta) {
-        ruta.setMap(null); // Limpia la ruta anterior si existe
-      }
+      if (ruta) ruta.setMap(null); // Limpia la ruta anterior si existe
 
       ruta = new google.maps.Polyline({
         path: coordenadas,
@@ -85,15 +72,11 @@
       });
 
       ruta.setMap(mapa);
-      if (coordenadas.length > 0) {
-        mapa.setCenter(coordenadas[0]); // Centra el mapa en la primera coordenada
-      }
+      if (coordenadas.length > 0) mapa.setCenter(coordenadas[0]); // Centra el mapa en la primera coordenada
     }
 
     window.initMap = initMap; // Hace que initMap sea global para que la API de Google Maps pueda invocarla
   </script>
-  <!-- Asegúrate de que la clave de API de Google Maps sea válida y esté autorizada para tu dominio -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
-  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=initMap"></script>
 </body>
 </html>
