@@ -66,6 +66,9 @@ udpServer.bind(10001, '0.0.0.0', () => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
+app.get('/historial', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'historial.html'));
+});
 
 app.get('/coordenadas', (req, res) => {
   const query = 'SELECT * FROM coordenadas'; // Consulta SQL
