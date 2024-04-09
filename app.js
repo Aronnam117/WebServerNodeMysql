@@ -95,3 +95,5 @@ const PORT = process.env.PORT || 80;
 server.listen(PORT, () => {
   console.log(`Servidor web escuchando en el puerto ${PORT}`);
 });
+
+module.exports = app;
