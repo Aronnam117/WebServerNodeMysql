@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial</title>
+    <title>Historial de Coordenadas</title>
     <style>
         #mapa {
             height: 400px;
+            width: 100%;
         }
     </style>
 </head>
@@ -17,55 +18,57 @@
         Hora Inicio: <input type="time" id="horaInicio">
         Fecha Fin: <input type="date" id="fechaFin">
         Hora Fin: <input type="time" id="horaFin">
-        <button onclick="initMap()">Filtrar</button>
+        <button onclick="filtrarHistorial()">Filtrar</button>
     </div>
     <div id="mapa"></div>
 
     <script>
-        function initMap() {
-    var fechaInicio = document.getElementById('fechaInicio').value;
-    var horaInicio = document.getElementById('horaInicio').value + ":00"; // Asegura que se añadan segundos
-    var fechaFin = document.getElementById('fechaFin').value;
-    var horaFin = document.getElementById('horaFin').value + ":00"; // Asegura que se añadan segundos
-    var url = `http://54.163.39.225/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
+        function filtrarHistorial() {
+            var fechaInicio = document.getElementById('fechaInicio').value;
+            var horaInicio = document.getElementById('horaInicio').value;
+            var fechaFin = document.getElementById('fechaFin').value;
+            var horaFin = document.getElementById('horaFin').value;
 
-            var map = new google.maps.Map(document.getElementById('mapa'), {
-                center: { lat: 0, lng: 0 },
-                zoom: 12
-            });
+            if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+                alert('Por favor, complete todos los campos de fecha y hora.');
+                return;
+            }
 
-            // Realizar solicitud al servidor para obtener el historial
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (this.readyState === XMLHttpRequest.DONE) {
-                    if (this.status === 200) {
-                        var historial = JSON.parse(this.responseText);
-                        mostrarRuta(map, historial);
-                    } else {
-                        console.error('Error al obtener el historial:', this.status);
+            var url = `/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener el historial');
                     }
-                }
-            };
-            xhr.open('GET', url, true);
-            xhr.send();
+                    return response.json();
+                })
+                .then(data => {
+                    initMap(data);
+                })
+                .catch(error => {
+                    console.error('Error al obtener el historial:', error);
+                });
         }
 
-        function mostrarRuta(map, historial) {
-  // Asegúrate de que estás accediendo correctamente a las propiedades
-  var path = historial.map(function(coordenada) {
-    return { lat: parseFloat(coordenada.latitud), lng: parseFloat(coordenada.longitud) };
-  });
+        function initMap(historial) {
+            var map = new google.maps.Map(document.getElementById('mapa'), {
+                zoom: 12,
+                center: historial.length ? { lat: parseFloat(historial[0].latitud), lng: parseFloat(historial[0].longitud) } : { lat: 0, lng: 0 }
+            });
 
-  var ruta = new google.maps.Polyline({
-    path: path,
-    geodesic: true,
-    strokeColor: '#FF0000',
-    strokeOpacity: 1.0,
-    strokeWeight: 2
-  });
+            var ruta = new google.maps.Polyline({
+                path: historial.map(function(coordenada) {
+                    return { lat: parseFloat(coordenada.latitud), lng: parseFloat(coordenada.longitud) };
+                }),
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
 
-  ruta.setMap(map);
-}
+            ruta.setMap(map);
+        }
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>

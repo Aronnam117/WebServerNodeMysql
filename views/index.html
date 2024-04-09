@@ -18,29 +18,27 @@
     <p id="fecha">Fecha: </p>
     <p id="hora">Hora: </p>
   </div>
-  <div>
-    <label for="fechaInicio">Fecha Inicio:</label>
-    <input type="date" id="fechaInicio">
-    <input type="time" id="horaInicio" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
-    <label for="fechaFin">Fecha Fin:</label>
-    <input type="date" id="fechaFin">
-    <input type="time" id="horaFin" step="1"> <!-- Cambiar a paso de 1 segundo para ingresar hora militar -->
-    <button onclick="filtrar()">Filtrar</button>
-  </div>
   <div id="mapa"></div>
   <script>
-    let markers = []; // Variable global para los marcadores
-    let polyline;
+    let mapa; // Variable global para el mapa
+    let polylinePath = []; // Almacena las coordenadas de la polilínea
 
     function iniciarMap() {
-      // Configuración del mapa
-      const mapOptions = {
+      // Configuración inicial del mapa
+      mapa = new google.maps.Map(document.getElementById('mapa'), {
         center: { lat: 0, lng: 0 }, // Coordenadas iniciales
         zoom: 12, // Nivel de zoom inicial
-      };
+      });
 
-      // Crear el mapa
-      const mapa = new google.maps.Map(document.getElementById('mapa'), mapOptions);
+      // Inicializar la polilínea sin camino
+      polyline = new google.maps.Polyline({
+        path: polylinePath,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+        map: mapa,
+      });
 
       const socket = io();
 
@@ -51,83 +49,15 @@
         document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
         document.getElementById('hora').innerText = 'Hora: ' + data.hora;
 
-        // Crear un nuevo marcador
-        const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
-        const marker = new google.maps.Marker({
-          position: markerPosition,
-          map: mapa,
-          title: 'Ubicación actual',
-        });
-
-        // Agregar el marcador a la lista de marcadores
-        markers.push(marker);
-
-        // Zoom al marcador
-        mapa.setCenter(markerPosition);
+        // Actualizar la posición del mapa y la polilínea con los nuevos datos
+        const nuevaPosicion = { lat: parseFloat(data.latitud), lng: parseFloat(data.longitud) };
+        mapa.setCenter(nuevaPosicion);
         mapa.setZoom(15);
+
+        // Actualizar y dibujar la polilínea con las nuevas coordenadas
+        polylinePath.push(nuevaPosicion);
+        polyline.setPath(polylinePath);
       });
-
-      socket.on('rutaFiltrada', (results) => {
-        // Limpiar los marcadores anteriores y la polilínea
-        markers.forEach(marker => marker.setMap(null));
-        markers = [];
-        if (polyline) {
-          polyline.setMap(null);
-        }
-
-        // Crear una nueva polilínea
-        const path = results.map(dato => {
-          return { lat: parseFloat(dato.latitud), lng: parseFloat(dato.longitud) };
-        });
-        polyline = new google.maps.Polyline({
-          path: path,
-          geodesic: true,
-          strokeColor: '#FF0000',
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-        polyline.setMap(mapa);
-
-        // Iterar sobre los resultados y crear marcadores
-        results.forEach(dato => {
-          const punto = { lat: parseFloat(dato.latitud), lng: parseFloat(dato.longitud) };
-          const fechaHoraISO = dato.fecha + ' ' + dato.hora;
-          const fechaHora = new Date(fechaHoraISO);
-          const fechaHoraLegible = fechaHora.toLocaleString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            hour12: true
-          });
-
-          const marker = new google.maps.Marker({
-            position: punto,
-            map: mapa,
-            title: `Estuvo aquí el ${fechaHoraLegible}`,
-          });
-
-          markers.push(marker);
-        });
-
-        console.log('Se ha filtrado el historial correctamente.');
-        console.log('Valores que cumplen con el filtro:', results);
-      });
-    }
-
-    function filtrar() {
-      const fechaInicio = document.getElementById('fechaInicio').value;
-      const horaInicio = document.getElementById('horaInicio').value;
-      const fechaFin = document.getElementById('fechaFin').value;
-      const horaFin = document.getElementById('horaFin').value;
-
-      // Enviar el filtro al servidor
-      const socket = io();
-      socket.emit('filtrarDatos', { fechaInicio, horaInicio, fechaFin, horaFin });
-
-      console.log('Filtrando historial...');
     }
   </script>
  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
