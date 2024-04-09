@@ -6,6 +6,8 @@ const http = require('http');
 const socketIo = require('socket.io');
 require('dotenv').config();
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
