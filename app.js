@@ -143,28 +143,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('filtrarPorPosicion', (filtro) => {
-    const { latitud, longitud } = filtro;
-    const query = `
-      SELECT latitud, longitud, fecha, hora
-      FROM coordenadas
-      WHERE ABS(latitud - ?) < 0.01 AND ABS(longitud - ?) < 0.01
-      ORDER BY id DESC
-      LIMIT 1
-    `; // Esta es una búsqueda muy básica y podría necesitar ser más sofisticada
-
-    db.query(query, [latitud, longitud], (err, results) => {
-      if (err) {
-        console.error('Error al filtrar por posición:', err);
-        socket.emit('errorEnFiltrado', 'Error al filtrar por posición');
-      } else if (results.length > 0) {
-        socket.emit('posicionFiltrada', results[0]);
-      } else {
-        socket.emit('posicionFiltrada', {});
-      }
-    });
-  });
-
   function dibujarRuta(historial) {
     if (!mapa) {
       mapa = new google.maps.Map(document.getElementById('mapa'), {

@@ -18,11 +18,8 @@
     Fecha Fin: <input type="date" id="fechaFin">
     Hora Fin: <input type="time" id="horaFin" step="1">
     <button onclick="filtrarHistorial()">Filtrar</button>
-    <h2>Filtrar por Posición</h2>
-    Latitud: <input type="text" id="latitudFiltro">
-    Longitud: <input type="text" id="longitudFiltro">
-    <button onclick="filtrarPorPosicion()">Filtrar por Posición</button>
-    <p id="infoPosicion">Fecha y Hora de paso: No disponible</p>
+    <input type="range" id="slider" min="0" value="0" style="width: 100%;" />
+    <p id="info">Fecha y hora seleccionada: <span id="fechaHora"></span></p>
   </div>
   <div id="mapa"></div>
 
@@ -65,33 +62,6 @@
   }
 });
 
-function filtrarPorPosicion() {
-  const latitud = document.getElementById('latitudFiltro').value;
-  const longitud = document.getElementById('longitudFiltro').value;
-
-  if (!latitud || !longitud) {
-    alert('Por favor, ingrese la latitud y longitud.');
-    return;
-  }
-
-  const socket = io.connect();
-  socket.emit('filtrarPorPosicion', {
-    latitud: parseFloat(latitud),
-    longitud: parseFloat(longitud)
-  });
-
-  // Escuchar la respuesta del servidor
-  socket.on('posicionFiltrada', function(resultado) {
-    const infoPosicion = document.getElementById('infoPosicion');
-    if (resultado.fecha && resultado.hora) {
-      infoPosicion.textContent = `Fecha y Hora de paso: ${resultado.fecha} ${resultado.hora}`;
-      // Si deseas centrar el mapa en esta posición, puedes hacerlo aquí
-    } else {
-      infoPosicion.textContent = 'Fecha y Hora de paso: No disponible';
-    }
-  });
-}
-
     }
 
     // Inicializa el mapa de Google Maps
@@ -104,35 +74,55 @@ function filtrarPorPosicion() {
 
     // Dibuja la ruta en el mapa a partir de los datos de la base de datos
     function dibujarRuta(datos) {
-      const coordenadas = datos.map(punto => ({
-        lat: parseFloat(punto.latitud),
-        lng: parseFloat(punto.longitud)
-      }));
+  const coordenadas = datos.map(punto => ({
+    lat: parseFloat(punto.latitud),
+    lng: parseFloat(punto.longitud)
+  }));
 
-      if (ruta) {
-        ruta.setMap(null); // Limpia la ruta anterior si existe
-      }
+  if (ruta) {
+    ruta.setMap(null); // Limpia la ruta anterior si existe
+  }
 
-      ruta = new google.maps.Polyline({
-        path: coordenadas,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
+  ruta = new google.maps.Polyline({
+    path: coordenadas,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+  });
 
-      ruta.setMap(mapa);
-      if (coordenadas.length > 0) {
-    // Centra el mapa en la primera coordenada
-    mapa.setCenter(coordenadas[0]);
-    
-    // Agregar un marcador en la última posición de la ruta
-    const ultimaPosicion = coordenadas[coordenadas.length - 1];
-    const marcador = new google.maps.Marker({
-      position: ultimaPosicion,
+  ruta.setMap(mapa);
+
+  // Si hay coordenadas, ajusta la vista del mapa y crea el marcador
+  if (coordenadas.length > 0) {
+    mapa.fitBounds(new google.maps.LatLngBounds(...coordenadas));
+
+    // Crear o mover el marcador de la ubicación actual
+    const marcadorSlider = new google.maps.Marker({
+      position: coordenadas[0],
       map: mapa,
-      title: 'Última ubicación'
+      title: 'Ubicación seleccionada'
     });
+
+    // Actualizar el slider y la información de fecha y hora
+    const slider = document.getElementById('slider');
+    const info = document.getElementById('fechaHora');
+    slider.max = datos.length - 1;
+    slider.value = 0;
+    info.textContent = `Fecha y hora seleccionada: ${datos[0].fecha} ${datos[0].hora}`;
+
+    // Función para actualizar el marcador y la información de fecha y hora
+    function actualizarMarker(pos) {
+      const punto = datos[pos];
+      const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
+      marcadorSlider.setPosition(latLng);
+      info.textContent = `Fecha y hora seleccionada: ${punto.fecha} ${punto.hora}`;
+    }
+
+    // Evento para cuando el valor del slider cambia
+    slider.oninput = function() {
+      actualizarMarker(this.value);
+    };
   }
 }
 
