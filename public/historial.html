@@ -28,10 +28,10 @@
 
     // Esta función se llama cuando el usuario hace clic en "Filtrar"
     function filtrarHistorial() {
-      var fechaInicio = document.getElementById('fechaInicio').value;
-      var horaInicio = document.getElementById('horaInicio').value;
-      var fechaFin = document.getElementById('fechaFin').value;
-      var horaFin = document.getElementById('horaFin').value;
+      const fechaInicio = document.getElementById('fechaInicio').value;
+      const horaInicio = document.getElementById('horaInicio').value;
+      const fechaFin = document.getElementById('fechaFin').value;
+      const horaFin = document.getElementById('horaFin').value;
 
       console.log(fechaInicio, horaInicio, fechaFin, horaFin);
 
@@ -41,7 +41,7 @@
       }
 
       // Establece una conexión WebSocket y envía los datos de filtrado
-      var socket = io.connect();
+      const socket = io.connect();
       socket.emit('filtrarDatos', {
         fechaInicio: fechaInicio,
         horaInicio: horaInicio,
@@ -88,9 +88,18 @@
 
       ruta.setMap(mapa);
       if (coordenadas.length > 0) {
-        mapa.setCenter(coordenadas[0]); // Centra el mapa en la primera coordenada
-      }
-    }
+    // Centra el mapa en la primera coordenada
+    mapa.setCenter(coordenadas[0]);
+    
+    // Agregar un marcador en la última posición de la ruta
+    const ultimaPosicion = coordenadas[coordenadas.length - 1];
+    const marcador = new google.maps.Marker({
+      position: ultimaPosicion,
+      map: mapa,
+      title: 'Última ubicación'
+    });
+  }
+}
 
     window.initMap = initMap; // Hace que initMap sea global para que la API de Google Maps pueda invocarla
   </script>
