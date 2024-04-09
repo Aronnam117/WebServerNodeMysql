@@ -144,6 +144,27 @@ io.on('connection', (socket) => {
     });
   });
 
+  function dibujarRuta(historial) {
+    if (!mapa) {
+      mapa = new google.maps.Map(document.getElementById('mapa'), {
+        zoom: 12,
+        center: historial.length > 0 ? { lat: parseFloat(historial[0].latitud), lng: parseFloat(historial[0].longitud) } : { lat: 0, lng: 0 }
+      });
+    }
+  
+    ruta = new google.maps.Polyline({
+      path: historial.map(punto => ({
+        lat: parseFloat(punto.latitud),
+        lng: parseFloat(punto.longitud)
+      })),
+      geodesic: true,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 2,
+      map: mapa
+    });
+  }
+
   // Enviar los datos más recientes al cliente cuando se conecta
   const query = 'SELECT latitud, longitud, fecha, hora FROM coordenadas ORDER BY id DESC LIMIT 1';
 

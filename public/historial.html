@@ -38,6 +38,20 @@
         alert('Por favor, complete todos los campos de fecha y hora.');
         return;
       }
+      const socket = io();
+  socket.emit('filtrarDatos', {
+    fechaInicio: fechaInicio,
+    horaInicio: horaInicio,
+    fechaFin: fechaFin,
+    horaFin: horaFin
+  });
+
+  // Escuchar el evento de respuesta del socket con los datos filtrados
+  socket.on('rutaFiltrada', (results) => {
+    console.log('Datos filtrados recibidos:', results);
+    dibujarRuta(results);
+  });
+
 
       const url = `/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
 
