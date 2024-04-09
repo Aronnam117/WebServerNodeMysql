@@ -22,7 +22,10 @@
     </div>
     <div id="mapa"></div>
 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=initMap" async defer></script>
     <script>
+        var map;
+
         function filtrarHistorial() {
             var fechaInicio = document.getElementById('fechaInicio').value;
             var horaInicio = document.getElementById('horaInicio').value;
@@ -34,7 +37,7 @@
                 return;
             }
 
-            var url = `/historial`;
+            var url = `/historial?fechaInicio=${fechaInicio}&horaInicio=${horaInicio}&fechaFin=${fechaFin}&horaFin=${horaFin}`;
             
             fetch(url)
                 .then(response => {
@@ -44,7 +47,8 @@
                     return response.json();
                 })
                 .then(data => {
-                    initMap(data);
+                    console.log('Datos del historial:', data); // Log de datos filtrados
+                    initMap(data); // Dibuja la ruta con los datos
                 })
                 .catch(error => {
                     console.error('Error al obtener el historial:', error);
@@ -52,24 +56,28 @@
         }
 
         function initMap(historial) {
-            var map = new google.maps.Map(document.getElementById('mapa'), {
-                zoom: 12,
-                center: historial.length ? { lat: parseFloat(historial[0].latitud), lng: parseFloat(historial[0].longitud) } : { lat: 0, lng: 0 }
-            });
+            if (!map) {
+                map = new google.maps.Map(document.getElementById('mapa'), {
+                    zoom: 12,
+                    center: { lat: 0, lng: 0 }
+                });
+            }
 
-            var ruta = new google.maps.Polyline({
-                path: historial.map(function(coordenada) {
-                    return { lat: parseFloat(coordenada.latitud), lng: parseFloat(coordenada.longitud) };
-                }),
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-            });
+            if (historial && historial.length > 0) {
+                var ruta = new google.maps.Polyline({
+                    path: historial.map(function(coordenada) {
+                        return { lat: parseFloat(coordenada.latitud), lng: parseFloat(coordenada.longitud) };
+                    }),
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
 
-            ruta.setMap(map);
+                ruta.setMap(map);
+                map.setCenter({ lat: parseFloat(historial[0].latitud), lng: parseFloat(historial[0].longitud) });
+            }
         }
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
 </html>
