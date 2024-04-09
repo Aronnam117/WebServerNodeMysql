@@ -12,6 +12,7 @@ require('dotenv').config();
 
 // Configuración del servidor
 app.use(express.static(path.join(__dirname, 'public')));
+res.sendFile(path.join(__dirname, 'public', 'historial.html'));
 
 // Crear el servidor UDP
 const dgram = require('dgram');
