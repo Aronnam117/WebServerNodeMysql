@@ -85,6 +85,14 @@ app.get('/coordenadas', (req, res) => {
 app.get('/historial', (req, res) => {
   const { fechaInicio, horaInicio, fechaFin, horaFin } = req.query;
 
+  // Verificar si se proporcionaron los parámetros necesarios
+  if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+    // Si no se proporcionan parámetros, simplemente sirve la página historial.html
+    // Asegúrate de que 'historial.html' esté ubicado en el directorio 'public'
+    return res.sendFile(path.join(__dirname, 'public', 'historial.html'));
+  }
+
+  // Si se proporcionan parámetros, realiza la consulta a la base de datos
   const query = `
     SELECT latitud, longitud, fecha, hora
     FROM coordenadas
@@ -92,17 +100,19 @@ app.get('/historial', (req, res) => {
     ORDER BY id
   `;
 
-  const values = [`${fechaInicio} ${horaInicio}`, `${fechaFin} ${horaFin}`];
+  // Preparar los valores de los parámetros para evitar 'undefined undefined'
+  const fechaHoraInicio = `${fechaInicio} ${horaInicio}`;
+  const fechaHoraFin = `${fechaFin} ${horaFin}`;
+
+  const values = [fechaHoraInicio, fechaHoraFin];
 
   db.query(query, values, (err, results) => {
     if (err) {
       console.error('Error al obtener el historial:', err);
-      res.status(500).send('Error al obtener el historial');
-      return;
+      return res.status(500).send('Error al obtener el historial');
     }
-
-    // Renderizar la página HTML con el mapa y la ruta
-    res.render('historial', { data: results });
+    // Devuelve los resultados filtrados como JSON
+    res.json(results);
   });
 });
 // Establecer conexión con los clientes
