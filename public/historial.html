@@ -49,14 +49,17 @@
         horaFin: horaFin
       });
 
-      // Escucha la respuesta del servidor y actualiza el mapa
       socket.on('rutaFiltrada', function(results) {
-        if (results.length === 0) {
-          alert('No se encontraron datos para el rango especificado.');
-        } else {
-          dibujarRuta(results);
-        }
-      });
+  if (results.length === 0) {
+    alert('No se encontraron datos para el rango especificado.');
+  } else {
+    if (!mapa) {
+      initMap(); // Inicializa el mapa si aún no se ha inicializado
+    }
+    dibujarRuta(results);
+  }
+});
+
     }
 
     // Inicializa el mapa de Google Maps
@@ -103,8 +106,8 @@
 
     window.initMap = initMap; // Hace que initMap sea global para que la API de Google Maps pueda invocarla
   </script>
-  <!-- Asegúrate de que la clave de API de Google Maps sea válida y esté autorizada para tu dominio -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=initMap"></script>
   </script>
 </body>
 </html>
