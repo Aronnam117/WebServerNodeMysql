@@ -22,6 +22,7 @@
   <script>
     let mapa; // Variable global para el mapa
     let polylinePath = []; // Almacena las coordenadas de la polilínea
+    let marcadorActual; // Almacena el marcador de la ubicación actual
 
     function iniciarMap() {
       // Configuración inicial del mapa
@@ -49,8 +50,20 @@
         document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
         document.getElementById('hora').innerText = 'Hora: ' + data.hora;
 
-        // Actualizar la posición del mapa y la polilínea con los nuevos datos
         const nuevaPosicion = { lat: parseFloat(data.latitud), lng: parseFloat(data.longitud) };
+
+        // Crear un nuevo marcador o actualizar el existente
+        if (marcadorActual) {
+          marcadorActual.setPosition(nuevaPosicion);
+        } else {
+          marcadorActual = new google.maps.Marker({
+            position: nuevaPosicion,
+            map: mapa,
+            title: 'Ubicación actual',
+          });
+        }
+
+        // Actualizar la posición del mapa
         mapa.setCenter(nuevaPosicion);
         mapa.setZoom(15);
 
