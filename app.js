@@ -8,11 +8,12 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   path: '/socket.io',
 });
+var historialRouter = require('./routes/historial');
 require('dotenv').config();
 
 // Configuración del servidor
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/historial', historialRouter);
 // Crear el servidor UDP
 const dgram = require('dgram');
 const udpServer = dgram.createSocket('udp4');
