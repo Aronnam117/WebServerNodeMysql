@@ -171,5 +171,9 @@ http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
 });
 
+app.listen(3000, () => {
+  console.log('Servidor escuchando en el puerto 3000');
+});
+
 // Exportar la aplicación Express
 module.exports = app;
