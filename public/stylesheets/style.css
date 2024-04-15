@@ -93,10 +93,19 @@ body, html {
 }
 
 #datosContainer {
-  width: 100%; /* Full width of the sidebar */
-  height: calc(100% - 20px); /* Height minus padding-top */
-  margin: 0;
-  padding: 10px;
-  box-sizing: border-box; /* Include padding in width calculation */
-  overflow-y: auto; /* Scrollable if the content overflows */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* This will space out the child elements */
+  height: calc(100% - 20px); /* Adjust if necessary */
+  /* ...other styles... */
+}
+
+/* Target all paragraph elements directly inside #datosContainer */
+#datosContainer > p {
+  margin-bottom: 20px; /* This will create more space between the paragraphs */
+}
+
+/* Additional styles for the last button to push it to the bottom */
+#datosContainer > button:last-child {
+  margin-top: auto; /* This will push the button to the bottom */
 }
