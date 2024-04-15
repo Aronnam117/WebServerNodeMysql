@@ -13,10 +13,10 @@ body, html {
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #fff; /* Changed to white background */
+  background-color: #fff; /* White background */
   overflow-x: hidden;
   transition: 0.5s;
-  padding-top: 0; /* Adjust as needed for the close button */
+  padding-top: 20px; /* Adjust as needed */
 }
 
 
@@ -93,10 +93,10 @@ body, html {
 }
 
 #datosContainer {
-  width: 100%; /* This will make sure the container fills the sidebar */
-  margin: 0; /* Adjust if you want no margin */
-  padding: 10px; /* Adjust as needed for padding */
-  box-sizing: border-box; /* Ensures padding doesn't add to the width */
-  height: calc(100% - 60px); /* Adjust if you have a different height for the close button */
-  overflow-y: auto; /* Enables scroll if the content is too long */
+  width: 100%; /* Full width of the sidebar */
+  height: calc(100% - 20px); /* Height minus padding-top */
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box; /* Include padding in width calculation */
+  overflow-y: auto; /* Scrollable if the content overflows */
 }
