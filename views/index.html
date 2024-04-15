@@ -49,14 +49,37 @@
   p {
     margin: 5px 0; /* Reduce el margen entre párrafos para compactar */
   }
+
+  .sidebar {
+      height: 100%;
+      width: 0; /* Start with a zero width */
+      position: fixed; 
+      z-index: 1; 
+      top: 0; 
+      left: 0;
+      background-color: #111; 
+      overflow-x: hidden; 
+      transition: 0.5s; 
+      padding-top: 60px;
+    }
+
+    /* When the sidebar has width set to 250px, it should slide in */
+    .sidebar.open {
+      width: 250px; /* Width of the open sidebar */
+    }
+
+    /* Style adjustments for the main content when sidebar is open */
+    .main-content.shifted {
+      margin-left: 250px;
+    }
   </style>
 </head>
 <body>
   <h1>Información Satelital</h1>
 
   <button onclick="toggleSidebar()" id="toggleSidebarButton">☰</button> <!-- Botón para abrir/cerrar el sidebar -->
-<div id="sidebar" class="sidebar">
-    <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a> <!-- Botón para cerrar el sidebar -->
+    <div id="sidebar" class="sidebar">
+    
     <div id="datosContainer">
       <p id="latitud">Latitud: </p>
       <p id="longitud">Longitud: </p>
@@ -67,23 +90,27 @@
     </div>
 </div>
 
-  <div id="mapa"></div>
+  
+<div id="mapa" class="main-content">
+
   <script>
     let mapa; // Variable global para el mapa
     let polylinePath = []; // Almacena las coordenadas de la polilínea
     let marcadorActual; // Almacena el marcador de la ubicación actual
        
     function toggleSidebar() {
-    var sidebarWidth = document.getElementById("sidebar").style.width;
-    if (sidebarWidth === "250px" || sidebarWidth === "") {
-      document.getElementById("sidebar").style.width = "0";
-      document.getElementById("main").style.marginLeft= "0";
-    } else {
-      document.getElementById("sidebar").style.width = "250px";
-      document.getElementById("main").style.marginLeft = "250px";
+      var sidebar = document.getElementById("sidebar");
+      var content = document.getElementById("mapa");
+      // Check if the sidebar is open or closed by checking the presence of the 'open' class
+      if (sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+        content.classList.remove('shifted');
+      } else {
+        sidebar.classList.add('open');
+        content.classList.add('shifted');
+      }
     }
-  }
-  
+
     function iniciarMap() {
       // Configuración inicial del mapa
       mapa = new google.maps.Map(document.getElementById('mapa'), {

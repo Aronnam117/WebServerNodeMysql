@@ -1,5 +1,3 @@
-/* public/stylesheets/style.css */
-
 body, html {
   margin: 0;
   padding: 0;
@@ -7,115 +5,78 @@ body, html {
   font-family: Arial, sans-serif;
 }
 
-#sidebar {
-  background-color: #000; /* Fondo negro */
-  color: white; /* Texto en blanco */
-  width: 250px; /* Sidebar abierto inicialmente */
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow-x: hidden;
-  transition: all 0.5s;
-  z-index: 2; /* Asegúrate de que el sidebar esté por encima de los otros elementos */
-}
-
-#sidebar button {
-  padding: 16px;
-  text-align: left;
-  border: none;
-  background: none;
-  outline: none;
-  color: white;
-  width: 100%;
-  text-transform: uppercase;
-  transition: all 0.3s;
-}
-
-#sidebar button:hover {
-  background-color: #555; /* Efecto hover */
-}
-
-#main {
-  margin-left: 250px; /* Hacer espacio para el sidebar */
-  padding: 1em;
-  transition: margin-left 0.5s; /* Animar el cierre/apertura del sidebar */
-}
-
-#mapa {
-  height: calc(100% - 60px); /* Ajustar la altura para la barra superior */
-  width: calc(100% - 250px); /* Ajustar el ancho para el sidebar */
-  transition: width 0.5s;
-}
-
-@media screen and (max-width: 768px) {
-  #sidebar {width: 100px;} /* Sidebar más pequeño para pantallas pequeñas */
-  #main {margin-left: 100px;}
-  #mapa {width: calc(100% - 100px);}
-}
-
+/* Sidebar styles */
 .sidebar {
   height: 100%;
-  width: 0;
-  position: fixed; 
-  z-index: 1; 
-  top: 0; 
+  width: 0; /* Sidebar starts hidden */
+  position: fixed;
+  z-index: 1;
+  top: 0;
   left: 0;
-  background-color: #111; 
-  overflow-x: hidden; 
-  transition: 0.5s; 
-  padding-top: 60px;
+  background-color: #111; /* Dark background for sidebar */
+  overflow-x: hidden;
+  transition: 0.5s; /* Smooth transition for opening and closing */
+  padding-top: 60px; /* Space for close button */
 }
 
+/* Sidebar open state */
+.sidebar.open {
+  width: 250px; /* Width of the open sidebar */
+}
+
+/* Main content styles */
+.main-content {
+  transition: margin-left 0.5s; /* Smooth transition for content shift */
+}
+
+/* Shifted state of main content when sidebar is open */
+.main-content.shifted {
+  margin-left: 250px;
+}
+
+/* Sidebar close button */
 .sidebar a.closebtn {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
+  position: absolute;
+  top: 0;
+  right: 25px;
   font-size: 36px;
-  color: #818181;
+  margin-left: 50px;
+  color: #818181; /* Light grey color for the close button */
+  padding: 8px 8px;
+}
+
+/* Sidebar content styles */
+.sidebar p, .sidebar button {
+  color: white; /* White text color for readability */
+  padding: 10px 15px;
+  text-decoration: none;
   display: block;
   transition: 0.3s;
 }
 
-#toggleSidebarButton {
-  font-size: 30px; 
-  cursor: pointer;
-  background-color: #007bff; 
-  color: white; 
-  padding: 10px 15px; 
-  border: none; 
-  margin: 10px 0; 
+.sidebar button:hover {
+  background-color: #575757; /* Lighter grey background on hover */
 }
 
-#toggleSidebarButton:hover {
-  background-color: #0056b3;
-}
-
-#sidebar {
-  background-color: #000; /* Fondo negro */
-  color: white; /* Texto en blanco */
-  width: 0; /* Sidebar cerrado inicialmente */
-  height: 100%; /* Tamaño completo de la altura */
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow-x: hidden;
-  transition: width 0.5s; /* Animación suave de apertura/cierre */
-  z-index: 2; /* Sobre otros elementos */
-}
-
+/* Toggle button to open/close sidebar */
 #toggleSidebarButton {
   font-size: 30px;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: #007bff; /* Blue background for the button */
   color: white;
   padding: 10px 15px;
   border: none;
-  position: fixed; /* Fijar el botón sobre el contenido */
+  position: fixed;
   top: 10px;
   left: 10px;
-  z-index: 3; /* Por encima del sidebar para que sea siempre accesible */
 }
 
 #toggleSidebarButton:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Adjustments for smaller screens */
+@media screen and (max-width: 768px) {
+  .sidebar.open { width: 100px; }
+  .main-content.shifted { margin-left: 100px; }
 }
