@@ -72,7 +72,18 @@
     let mapa; // Variable global para el mapa
     let polylinePath = []; // Almacena las coordenadas de la polilínea
     let marcadorActual; // Almacena el marcador de la ubicación actual
-
+       
+    function toggleSidebar() {
+    var sidebarWidth = document.getElementById("sidebar").style.width;
+    if (sidebarWidth === "250px" || sidebarWidth === "") {
+      document.getElementById("sidebar").style.width = "0";
+      document.getElementById("main").style.marginLeft= "0";
+    } else {
+      document.getElementById("sidebar").style.width = "250px";
+      document.getElementById("main").style.marginLeft = "250px";
+    }
+  }
+  
     function iniciarMap() {
       // Configuración inicial del mapa
       mapa = new google.maps.Map(document.getElementById('mapa'), {

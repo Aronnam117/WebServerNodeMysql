@@ -89,3 +89,33 @@ body, html {
 #toggleSidebarButton:hover {
   background-color: #0056b3;
 }
+
+#sidebar {
+  background-color: #000; /* Fondo negro */
+  color: white; /* Texto en blanco */
+  width: 0; /* Sidebar cerrado inicialmente */
+  height: 100%; /* Tamaño completo de la altura */
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  transition: width 0.5s; /* Animación suave de apertura/cierre */
+  z-index: 2; /* Sobre otros elementos */
+}
+
+#toggleSidebarButton {
+  font-size: 30px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  position: fixed; /* Fijar el botón sobre el contenido */
+  top: 10px;
+  left: 10px;
+  z-index: 3; /* Por encima del sidebar para que sea siempre accesible */
+}
+
+#toggleSidebarButton:hover {
+  background-color: #0056b3;
+}
