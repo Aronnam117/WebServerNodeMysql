@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
   <meta charset="utf-8">
   <title>Información Satelital</title>
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
@@ -11,41 +10,48 @@
       padding: 0;
       height: 100%;
       font-family: Arial, sans-serif;
+      overflow-x: hidden;
     }
 
     #sidebar {
+      background-color: #000;
+      color: white;
+      width: 250px;
       height: 100%;
-      width: 250px; /* Width must match the width in toggleSidebar() */
       position: fixed;
-      z-index: 1;
       top: 0;
       left: 0;
-      background-color: #111;
       overflow-x: hidden;
+      transition: all 0.5s;
       padding-top: 20px;
-      transition: 0.5s;
+      z-index: 2;
+    }
+
+    #sidebar .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+      cursor: pointer;
+      color: white;
     }
 
     #sidebar button {
-      padding: 10px;
-      text-decoration: none;
-      font-size: 25px;
-      color: white;
-      display: block;
+      padding: 10px 15px;
+      text-align: left;
+      width: 100%;
       border: none;
       background: none;
-      text-align: left;
-      cursor: pointer;
       outline: none;
+      color: white;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: color 0.3s;
     }
 
     #sidebar button:hover {
       color: #f1f1f1;
-    }
-
-    #sidebar #datosSidebar p {
-      color: white;
-      padding: 5px 15px;
     }
 
     #main {
@@ -55,26 +61,21 @@
     }
 
     #mapa {
-      height: calc(100% - 60px); /* Adjust the height to take into account the top bar */
-      width: 100%;
-    }
-
-    @media screen and (max-width: 768px) {
-      #sidebar {padding-top: 15px;}
-      #sidebar button {font-size: 18px;}
-      #main {margin-left: 0;}
+      height: calc(100vh - 50px);
+      transition: height 0.5s;
     }
   </style>
 </head>
 <body>
 
   <div id="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
     <button onclick="window.location.href='/historial';">Historial</button>
-    <div id="datosSidebar">
-      <p id="latitud">Latitud: -</p>
-      <p id="longitud">Longitud: -</p>
-      <p id="fecha">Fecha: -</p>
-      <p id="hora">Hora: -</p>
+    <div id="datosContainer">
+      <p id="latitud">Latitud: </p>
+      <p id="longitud">Longitud: </p>
+      <p id="fecha">Fecha: </p>
+      <p id="hora">Hora: </p>
     </div>
   </div>
 
@@ -84,54 +85,51 @@
   </div>
 
   <script>
-    let mapa; // Variable global para el mapa
-    let polylinePath = []; // Almacena las coordenadas de la polilínea
-    let marcadorActual; // Almacena el marcador de la ubicación actual
-
-    function iniciarMap() {
-      mapa = new google.maps.Map(document.getElementById('mapa'), {
-        center: { lat: 0, lng: 0 }, // Coordenadas iniciales
-        zoom: 12, // Nivel de zoom inicial
-      });
-
-      // Inicializar la polilínea sin camino
-      polyline = new google.maps.Polyline({
-        path: polylinePath,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-        map: mapa,
-      });
-
-      const socket = io();
-
-      socket.on('datosActualizados', (data) => {
-        document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
-        document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
-        document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
-        document.getElementById('hora').innerText = 'Hora: ' + data.hora;
-
-        const nuevaPosicion = { lat: parseFloat(data.latitud), lng: parseFloat(data.longitud) };
-
-        if (marcadorActual) {
-          marcadorActual.setPosition(nuevaPosicion);
-        } else {
-          marcadorActual = new google.maps.Marker({
-            position: nuevaPosicion,
-            map: mapa,
-            title: 'Ubicación actual',
-          });
-        }
-
-        mapa.setCenter(nuevaPosicion);
-        mapa.setZoom(15);
-
-        polylinePath.push(nuevaPosicion);
-        polyline.setPath(polylinePath);
-      });
+    function closeNav() {
+      document.getElementById("sidebar").style.width = "0";
+      document.getElementById("main").style.marginLeft= "0";
     }
+
+    function closeNav() {
+    document.getElementById("sidebar").style.width = "0";
+    document.getElementById("main").style.marginLeft= "0";
+  }
+
+  let mapa;
+  let marcadorActual;
+
+  function iniciarMap() {
+    // Configuración inicial del mapa
+    mapa = new google.maps.Map(document.getElementById('mapa'), {
+      center: { lat: 0, lng: 0 }, // Coordenadas iniciales
+      zoom: 12, // Nivel de zoom inicial
+    });
+
+    // Marcador que se actualizará con los datos en tiempo real
+    marcadorActual = new google.maps.Marker({
+      map: mapa,
+      title: 'Ubicación actual'
+    });
+  }
+
+  const socket = io();
+
+  // Escuchar eventos de datos actualizados del servidor
+  socket.on('datosActualizados', (data) => {
+    // Actualizar la interfaz de usuario con los nuevos datos
+    document.getElementById('latitud').textContent = 'Latitud: ' + data.latitud;
+    document.getElementById('longitud').textContent = 'Longitud: ' + data.longitud;
+    document.getElementById('fecha').textContent = 'Fecha: ' + data.fecha;
+    document.getElementById('hora').textContent = 'Hora: ' + data.hora;
+
+    // Actualizar la ubicación del marcador en el mapa
+    const nuevaPosicion = { lat: parseFloat(data.latitud), lng: parseFloat(data.longitud) };
+    marcadorActual.setPosition(nuevaPosicion);
+    mapa.setCenter(nuevaPosicion);
+  });
+
   </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+
+ <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
 </html>
