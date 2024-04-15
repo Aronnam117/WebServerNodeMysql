@@ -93,6 +93,10 @@ body, html {
 }
 
 #datosContainer {
-  height: calc(100% - 60px); /* Full height minus the top padding */
-  overflow-y: auto; /* Enable scrolling if necessary */
+  width: 100%; /* This will make sure the container fills the sidebar */
+  margin: 0; /* Adjust if you want no margin */
+  padding: 10px; /* Adjust as needed for padding */
+  box-sizing: border-box; /* Ensures padding doesn't add to the width */
+  height: calc(100% - 60px); /* Adjust if you have a different height for the close button */
+  overflow-y: auto; /* Enables scroll if the content is too long */
 }
