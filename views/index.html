@@ -53,14 +53,20 @@
 </head>
 <body>
   <h1>Información Satelital</h1>
-  <div id="datosContainer">
-    <p id="latitud">Latitud: </p>
-    <p id="longitud">Longitud: </p>
-    <p id="fecha">Fecha: </p>
-    <p id="hora">Hora: </p>
-    <button onclick="window.location.href='/coordenadas';">Ver Coordenadas</button>
-    <button onclick="window.location.href='/historial';">Ver Historial</button>
-  </div>
+
+  <button onclick="toggleSidebar()" id="toggleSidebarButton">☰</button> <!-- Botón para abrir/cerrar el sidebar -->
+<div id="sidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a> <!-- Botón para cerrar el sidebar -->
+    <div id="datosContainer">
+      <p id="latitud">Latitud: </p>
+      <p id="longitud">Longitud: </p>
+      <p id="fecha">Fecha: </p>
+      <p id="hora">Hora: </p>
+      <button onclick="window.location.href='/coordenadas';">Ver Coordenadas</button>
+      <button onclick="window.location.href='/historial';">Ver Historial</button>
+    </div>
+</div>
+
   <div id="mapa"></div>
   <script>
     let mapa; // Variable global para el mapa
