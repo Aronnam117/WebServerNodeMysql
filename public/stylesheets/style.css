@@ -7,8 +7,11 @@ body, html {
 
 /* Sidebar styles */
 .sidebar {
-  height: 100vh; /* Full height */
-  width: 0; /* Start with sidebar closed */
+  display: flex; /* Using flexbox */
+  flex-direction: column; /* Stack items vertically */
+  justify-content: space-between; /* Space out the container and button */
+  height: 100vh; /* Full viewport height */
+  width: 250px; /* Adjust width as needed */
   position: fixed;
   z-index: 1;
   top: 0;
@@ -93,11 +96,13 @@ body, html {
 }
 
 #datosContainer {
+  flex-grow: 1;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* This will space out the child elements */
   height: calc(100% - 20px); /* Adjust if necessary */
-  /* ...other styles... */
+  overflow-y: auto;
 }
 
 /* Target all paragraph elements directly inside #datosContainer */
@@ -106,6 +111,6 @@ body, html {
 }
 
 /* Additional styles for the last button to push it to the bottom */
-#datosContainer > button:last-child {
-  margin-top: auto; /* This will push the button to the bottom */
+#sidebar button:last-child {
+  margin-top: auto; /* Push the button to the bottom */
 }
