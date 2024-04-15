@@ -7,17 +7,18 @@ body, html {
 
 /* Sidebar styles */
 .sidebar {
-  height: 100%;
-  width: 0; /* Sidebar starts hidden */
+  height: 100%; /* Full height */
+  width: 0; /* Start with sidebar closed */
   position: fixed;
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #111; /* Dark background for sidebar */
+  background-color: #fff; /* Changed to white background */
   overflow-x: hidden;
-  transition: 0.5s; /* Smooth transition for opening and closing */
-  padding-top: 60px; /* Space for close button */
+  transition: 0.5s;
+  padding-top: 60px; /* Adjust as needed for the close button */
 }
+
 
 /* Sidebar open state */
 .sidebar.open {
@@ -47,7 +48,7 @@ body, html {
 
 /* Sidebar content styles */
 .sidebar p, .sidebar button {
-  color: white; /* White text color for readability */
+  color: #333; /* Darker text for better contrast on white background */
   padding: 10px 15px;
   text-decoration: none;
   display: block;
@@ -88,4 +89,10 @@ body, html {
   font-size: 30px;
   padding: 20px;
   cursor: pointer;
+  color: #818181; /* Light grey to contrast with the white background */
+}
+
+#datosContainer {
+  height: calc(100% - 60px); /* Full height minus the top padding */
+  overflow-y: auto; /* Enable scrolling if necessary */
 }

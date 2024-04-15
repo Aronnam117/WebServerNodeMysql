@@ -78,8 +78,8 @@
   <h1>Información Satelital</h1>
 
   <button onclick="toggleSidebar()" id="toggleSidebarButton">☰</button> <!-- Botón para abrir/cerrar el sidebar -->
-    <div id="sidebar" class="sidebar">
-    <button onclick="toggleSidebar()" class="closebtn">×</button>
+    <div id="sidebar" class="sidebar" style="height: calc(100% - 60px);">
+    <button onclick="toggleSidebar()" id="closeSidebarButton" class="closebtn">×</button>
     <div id="datosContainer">
       <p id="latitud">Latitud: </p>
       <p id="longitud">Longitud: </p>
