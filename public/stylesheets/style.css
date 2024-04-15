@@ -1,33 +1,25 @@
 body, html {
+  height: 100%; /* Esto asegura que el sidebar pueda extenderse al 100% de la altura de la página */
   margin: 0;
   padding: 0;
-  height: 100%;
-  font-family: Arial, sans-serif;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f9; /* Color de fondo suave para todo el documento */
 }
 
 /* Sidebar styles */
 .sidebar {
-  display: flex; /* Using flexbox */
-  flex-direction: column; /* Stack items vertically */
-  justify-content: space-between; /* Space out the container and button */
-  height: 100vh; /* Full viewport height */
-  width: 250px; /* Adjust width as needed */
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #fff; /* White background */
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 20px; /* Adjust as needed */
+  background-color: #fff; /* Fondo blanco para el sidebar */
+  color: #333; /* Texto oscuro para mejor contraste */
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil para dar profundidad */
+  border-radius: 8px; /* Bordes redondeados para el estilo */
 }
 
 
 /* Sidebar open state */
 .sidebar.open {
-  width: 250px; /* Width of the open sidebar */
+  width: 250px; /* Ancho del sidebar abierto */
 }
-
 /* Main content styles */
 .main-content {
   transition: margin-left 0.5s; /* Smooth transition for content shift */
@@ -64,13 +56,15 @@ body, html {
 
 /* Toggle button to open/close sidebar */
 #toggleSidebarButton {
-  font-size: 30px;
-  cursor: pointer;
-  background-color: #007bff; /* Blue background for the button */
+  background-color: #007bff; /* Color azul para botones */
   color: white;
-  padding: 10px 15px;
   border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
   position: fixed;
+  z-index: 2; /* Asegúrate de que el botón esté sobre el contenido */
   top: 10px;
   left: 10px;
 }
@@ -81,36 +75,47 @@ body, html {
 
 /* Adjustments for smaller screens */
 @media screen and (max-width: 768px) {
-  .sidebar.open { width: 100px; }
-  .main-content.shifted { margin-left: 100px; }
+  .sidebar.open { width: 100%; } /* En pantallas pequeñas, el sidebar toma todo el ancho */
+  .main-content.shifted { margin-left: 0; } /* El contenido principal vuelve a la posición original */
 }
 
 .closebtn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 30px;
-  padding: 20px;
   cursor: pointer;
-  color: #818181; /* Light grey to contrast with the white background */
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 36px;
+  color: #818181;
 }
 
 #datosContainer {
-  flex-grow: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* This will space out the child elements */
-  height: calc(100% - 20px); /* Adjust if necessary */
-  overflow-y: auto;
+  overflow-y: auto; /* Permite desplazamiento si el contenido es muy alto */
+  margin-bottom: 20px; /* Margen inferior para separar del final del sidebar */
+}
+/* Target all paragraph elements directly inside #datosContainer */
+#datosContainer p,
+#datosContainer button {
+  margin: 15px 0;
 }
 
-/* Target all paragraph elements directly inside #datosContainer */
-#datosContainer > p {
-  margin-bottom: 20px; /* This will create more space between the paragraphs */
+/* Estilo para el botón de historial al final del sidebar */
+#datosContainer button:last-child {
+  margin-top: auto; /* Empuja el botón hacia abajo */
 }
 
 /* Additional styles for the last button to push it to the bottom */
 #sidebar button:last-child {
   margin-top: auto; /* Push the button to the bottom */
+}
+
+#mapa {
+  height: calc(100vh - 40px); /* Ajusta la altura para que tome todo el espacio vertical disponible */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin: 20px; /* Espaciado alrededor del mapa */
+  transition: margin-left 0.5s; /* Transición suave al abrir/cerrar el sidebar */
+}
+
+.main-content.shifted {
+  margin-left: 250px; /* Margen izquierdo igual al ancho del sidebar */
 }
