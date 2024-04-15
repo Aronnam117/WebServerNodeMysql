@@ -5,9 +5,50 @@
   <title>Información Satelital</title>
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
   <style>
-    #mapa {
-      height: 400px;
-    }
+     body {
+    font-family: Arial, sans-serif; /* Establece una tipografía limpia y moderna */
+    background-color: #f4f4f9; /* Color de fondo suave */
+    margin: 0;
+    padding: 20px; /* Espacio alrededor del contenido */
+  }
+
+  h1 {
+    color: #333; /* Color oscuro para el título */
+    text-align: center; /* Centra el título */
+  }
+
+  #datosContainer {
+    background-color: #fff; /* Fondo blanco para el contenedor de datos */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
+    margin: 20px 0; /* Margen superior e inferior */
+  }
+
+  #mapa {
+    height: 400px;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
+  }
+
+  button {
+    background-color: #007bff; /* Color azul para botones */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer; /* Cursor tipo mano al pasar el ratón */
+    margin-right: 10px; /* Separación entre botones */
+    font-size: 16px; /* Tamaño de letra más grande para mejor lectura */
+  }
+
+  button:hover {
+    background-color: #0056b3; /* Color azul más oscuro al pasar el ratón */
+  }
+
+  p {
+    margin: 5px 0; /* Reduce el margen entre párrafos para compactar */
+  }
   </style>
 </head>
 <body>
