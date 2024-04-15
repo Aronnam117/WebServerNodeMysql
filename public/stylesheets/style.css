@@ -1,8 +1,56 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+/* public/stylesheets/style.css */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+#sidebar {
+  background-color: #000; /* Fondo negro */
+  color: white; /* Texto en blanco */
+  width: 250px; /* Sidebar abierto inicialmente */
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  transition: all 0.5s;
+  z-index: 2; /* Asegúrate de que el sidebar esté por encima de los otros elementos */
 }
+
+#sidebar button {
+  padding: 16px;
+  text-align: left;
+  border: none;
+  background: none;
+  outline: none;
+  color: white;
+  width: 100%;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+#sidebar button:hover {
+  background-color: #555; /* Efecto hover */
+}
+
+#main {
+  margin-left: 250px; /* Hacer espacio para el sidebar */
+  padding: 1em;
+  transition: margin-left 0.5s; /* Animar el cierre/apertura del sidebar */
+}
+
+#mapa {
+  height: calc(100% - 60px); /* Ajustar la altura para la barra superior */
+  width: calc(100% - 250px); /* Ajustar el ancho para el sidebar */
+  transition: width 0.5s;
+}
+
+@media screen and (max-width: 768px) {
+  #sidebar {width: 100px;} /* Sidebar más pequeño para pantallas pequeñas */
+  #main {margin-left: 100px;}
+  #mapa {width: calc(100% - 100px);}
+}
+

@@ -1,33 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
   <meta charset="utf-8">
   <title>Información Satelital</title>
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
   <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    #sidebar {
+      height: 100%;
+      width: 250px; /* Width must match the width in toggleSidebar() */
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-x: hidden;
+      padding-top: 20px;
+      transition: 0.5s;
+    }
+
+    #sidebar button {
+      padding: 10px;
+      text-decoration: none;
+      font-size: 25px;
+      color: white;
+      display: block;
+      border: none;
+      background: none;
+      text-align: left;
+      cursor: pointer;
+      outline: none;
+    }
+
+    #sidebar button:hover {
+      color: #f1f1f1;
+    }
+
+    #sidebar #datosSidebar p {
+      color: white;
+      padding: 5px 15px;
+    }
+
+    #main {
+      transition: margin-left .5s;
+      padding: 16px;
+      padding-top: 50px;
+    }
+
     #mapa {
-      height: 400px;
+      height: calc(100% - 60px); /* Adjust the height to take into account the top bar */
+      width: 100%;
+    }
+
+    @media screen and (max-width: 768px) {
+      #sidebar {padding-top: 15px;}
+      #sidebar button {font-size: 18px;}
+      #main {margin-left: 0;}
     }
   </style>
 </head>
 <body>
-  <h1>Información Satelital</h1>
-  <div id="datosContainer">
-    <p id="latitud">Latitud: </p>
-    <p id="longitud">Longitud: </p>
-    <p id="fecha">Fecha: </p>
-    <p id="hora">Hora: </p>
-    <button onclick="window.location.href='/coordenadas';">Ver Coordenadas</button>
-    <button onclick="window.location.href='/historial';">Ver Historial</button>
+
+  <div id="sidebar">
+    <button onclick="window.location.href='/historial';">Historial</button>
+    <div id="datosSidebar">
+      <p id="latitud">Latitud: -</p>
+      <p id="longitud">Longitud: -</p>
+      <p id="fecha">Fecha: -</p>
+      <p id="hora">Hora: -</p>
+    </div>
   </div>
-  <div id="mapa"></div>
+
+  <div id="main">
+    <h1>Información Satelital</h1>
+    <div id="mapa"></div>
+  </div>
+
   <script>
     let mapa; // Variable global para el mapa
     let polylinePath = []; // Almacena las coordenadas de la polilínea
     let marcadorActual; // Almacena el marcador de la ubicación actual
 
     function iniciarMap() {
-      // Configuración inicial del mapa
       mapa = new google.maps.Map(document.getElementById('mapa'), {
         center: { lat: 0, lng: 0 }, // Coordenadas iniciales
         zoom: 12, // Nivel de zoom inicial
@@ -46,7 +107,6 @@
       const socket = io();
 
       socket.on('datosActualizados', (data) => {
-        // Actualizar la interfaz de usuario con los nuevos datos
         document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
         document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
         document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
@@ -54,7 +114,6 @@
 
         const nuevaPosicion = { lat: parseFloat(data.latitud), lng: parseFloat(data.longitud) };
 
-        // Crear un nuevo marcador o actualizar el existente
         if (marcadorActual) {
           marcadorActual.setPosition(nuevaPosicion);
         } else {
@@ -65,16 +124,14 @@
           });
         }
 
-        // Actualizar la posición del mapa
         mapa.setCenter(nuevaPosicion);
         mapa.setZoom(15);
 
-        // Actualizar y dibujar la polilínea con las nuevas coordenadas
         polylinePath.push(nuevaPosicion);
         polyline.setPath(polylinePath);
       });
     }
   </script>
- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
 </html>
