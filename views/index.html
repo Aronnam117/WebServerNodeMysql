@@ -16,25 +16,15 @@
     #sidebar {
       background-color: #000;
       color: white;
-      width: 250px;
+      width: 250px; /* Ancho inicial del sidebar */
       height: 100%;
       position: fixed;
       top: 0;
       left: 0;
       overflow-x: hidden;
-      transition: all 0.5s;
+      transition: width 0.5s;
       padding-top: 20px;
-      z-index: 2;
-    }
-
-    #sidebar .closebtn {
-      position: absolute;
-      top: 0;
-      right: 25px;
-      font-size: 36px;
-      margin-left: 50px;
-      cursor: pointer;
-      color: white;
+      z-index: 5;
     }
 
     #sidebar button {
@@ -46,7 +36,6 @@
       outline: none;
       color: white;
       cursor: pointer;
-      text-transform: uppercase;
       transition: color 0.3s;
     }
 
@@ -54,82 +43,148 @@
       color: #f1f1f1;
     }
 
+    #sidebar .btn-box {
+      border: 2px solid white;
+      display: block;
+      margin: 10px 15px;
+      text-align: center;
+    }
+
     #main {
       transition: margin-left .5s;
       padding: 16px;
       padding-top: 50px;
+      width: calc(100% - 250px);
+      overflow: hidden;
+      position: relative; /* For absolute positioning of toggle button */
     }
 
     #mapa {
       height: calc(100vh - 50px);
-      transition: height 0.5s;
+      width: 100%;
+    }
+
+    .toggle-btn {
+      font-size: 30px;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      left: 250px;
+      z-index: 6;
+      color: white;
+      background-color: #000;
+      padding: 5px;
+      border: none;
+    }
+
+    @media screen and (max-width: 768px) {
+      #sidebar { width: 100px; }
+      #main { margin-left: 100px; width: calc(100% - 100px); }
+      .toggle-btn { left: 100px; }
     }
   </style>
 </head>
 <body>
 
   <div id="sidebar">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-    <button onclick="window.location.href='/historial';">Historial</button>
-    <div id="datosContainer">
-      <p id="latitud">Latitud: </p>
-      <p id="longitud">Longitud: </p>
-      <p id="fecha">Fecha: </p>
-      <p id="hora">Hora: </p>
+    <div class="btn-box">
+      <button onclick="window.location.href='/historial';">HISTORIAL</button>
+    </div>
+    <div id="datosSidebar">
+        <p id="latitud">Latitud: -</p>
+        <p id="longitud">Longitud: -</p>
+        <p id="fecha">Fecha: -</p>
+        <p id="hora">Hora: -</p>
+      </div>
     </div>
   </div>
 
   <div id="main">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
     <h1>Información Satelital</h1>
     <div id="mapa"></div>
   </div>
 
   <script>
-    function closeNav() {
-      document.getElementById("sidebar").style.width = "0";
-      document.getElementById("main").style.marginLeft= "0";
+    function toggleSidebar() {
+      var sidebar = document.getElementById("sidebar");
+      var main = document.getElementById("main");
+      var toggleBtn = document.querySelector('.toggle-btn');
+
+      // Check the width of the sidebar to determine its current state
+      if (sidebar.offsetWidth === 250) {
+        sidebar.style.width = '0';
+        toggleBtn.style.left = '0';
+        main.style.marginLeft = '0';
+        main.style.width = '100%';
+      } else {
+        sidebar.style.width = '250px';
+        toggleBtn.style.left = '250px';
+        main.style.marginLeft = '250px';
+        main.style.width = 'calc(100% - 250px)';
+      }
     }
 
-    function closeNav() {
-    document.getElementById("sidebar").style.width = "0";
-    document.getElementById("main").style.marginLeft= "0";
+    
+
+    function toggleSidebar() {
+    var sidebar = document.getElementById("sidebar");
+    var main = document.getElementById("main");
+    var toggleBtn = document.querySelector('.toggle-btn');
+
+    // Verifica el ancho actual del sidebar para determinar su estado
+    if (sidebar.offsetWidth === 250) {
+      sidebar.style.width = '0';
+      toggleBtn.style.left = '0';
+      main.style.marginLeft = '0';
+      main.style.width = '100%';
+    } else {
+      sidebar.style.width = '250px';
+      toggleBtn.style.left = '250px';
+      main.style.marginLeft = '250px';
+      main.style.width = 'calc(100% - 250px)';
+    }
   }
 
+  // Variable global para el mapa
   let mapa;
+  // Variable global para el marcador actual
   let marcadorActual;
 
+  // Función para iniciar el mapa
   function iniciarMap() {
-    // Configuración inicial del mapa
     mapa = new google.maps.Map(document.getElementById('mapa'), {
       center: { lat: 0, lng: 0 }, // Coordenadas iniciales
-      zoom: 12, // Nivel de zoom inicial
+      zoom: 8 // Nivel de zoom inicial
     });
 
-    // Marcador que se actualizará con los datos en tiempo real
+    // Inicializar marcador
     marcadorActual = new google.maps.Marker({
       map: mapa,
       title: 'Ubicación actual'
     });
   }
 
-  const socket = io();
+  // Conexión de Socket.IO para recibir datos en tiempo real
+  const socket = io('http://54.163.39.225');
 
-  // Escuchar eventos de datos actualizados del servidor
-  socket.on('datosActualizados', (data) => {
-    // Actualizar la interfaz de usuario con los nuevos datos
+  // Escuchar evento 'datosActualizados' para recibir los datos
+  socket.on('datosActualizados', function(data) {
+    // Actualizar datos en la barra lateral
     document.getElementById('latitud').textContent = 'Latitud: ' + data.latitud;
     document.getElementById('longitud').textContent = 'Longitud: ' + data.longitud;
     document.getElementById('fecha').textContent = 'Fecha: ' + data.fecha;
     document.getElementById('hora').textContent = 'Hora: ' + data.hora;
 
-    // Actualizar la ubicación del marcador en el mapa
-    const nuevaPosicion = { lat: parseFloat(data.latitud), lng: parseFloat(data.longitud) };
+    // Mover el marcador a la nueva ubicación
+    var nuevaPosicion = new google.maps.LatLng(data.latitud, data.longitud);
     marcadorActual.setPosition(nuevaPosicion);
+
+    // Centrar el mapa en la nueva ubicación
     mapa.setCenter(nuevaPosicion);
   });
-
   </script>
-
- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
 </html>
