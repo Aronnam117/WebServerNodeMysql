@@ -196,11 +196,11 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  if (sidebar.style.left === '0px') {
-    sidebar.style.left = '-250px';
+  var sidebar = document.getElementById("sidebar");
+  if (sidebar.style.width === "250px") {
+    sidebar.style.width = "0";
   } else {
-    sidebar.style.left = '0px';
+    sidebar.style.width = "250px";
   }
 }
 

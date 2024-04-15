@@ -54,3 +54,38 @@ body, html {
   #mapa {width: calc(100% - 100px);}
 }
 
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed; 
+  z-index: 1; 
+  top: 0; 
+  left: 0;
+  background-color: #111; 
+  overflow-x: hidden; 
+  transition: 0.5s; 
+  padding-top: 60px;
+}
+
+.sidebar a.closebtn {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+#toggleSidebarButton {
+  font-size: 30px; 
+  cursor: pointer;
+  background-color: #007bff; 
+  color: white; 
+  padding: 10px 15px; 
+  border: none; 
+  margin: 10px 0; 
+}
+
+#toggleSidebarButton:hover {
+  background-color: #0056b3;
+}
