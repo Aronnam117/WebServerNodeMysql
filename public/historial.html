@@ -27,7 +27,7 @@
     </div>
     <div class="slider-section">
       <input type="range" id="slider" min="0" value="0" style="width: 100%;" />
-      <p id="info"><span id="fechaHora"></span></p>
+      <p id="info">Fecha y hora seleccionada: <span id="fechaHora"></span></p>
     </div>
   </div>
   <!-- Aquí podrías poner tu logo -->
@@ -124,7 +124,7 @@
     const info = document.getElementById('fechaHora');
     slider.max = datos.length - 1;
     slider.value = 0;
-    info.textContent = `Fecha y hora seleccionada: ${datos[0].fecha} ${datos[0].hora}`;
+    info.textContent = `${datos[0].fecha} ${datos[0].hora}`;
 
     // Función para actualizar el marcador y la información de fecha y hora
     // Función para actualizar el marcador y la información de fecha y hora
@@ -136,7 +136,7 @@ function actualizarMarker(pos) {
 
   // Formatear la fecha eliminando "T00:00:00.000Z" y la hora
   const fechaHora = new Date(punto.fecha).toLocaleString();
-  info.textContent = `Fecha y hora seleccionada: ${fechaHora}`;
+  info.textContent = `${fechaHora}`;
 }
 
 // Evento para cuando el valor del slider cambia
