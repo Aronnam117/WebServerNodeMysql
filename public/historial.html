@@ -110,8 +110,7 @@
     const info = document.getElementById('fechaHora');
     slider.max = datos.length - 1;
     slider.value = 0;
-    var fechaSinHora = data.fecha.split('T')[0]; // Esto dará "2024-04-16"
-    info.textContent = `Fecha y hora seleccionada: ${datos[0].fechaSinHora} ${datos[0].hora}`;
+    info.textContent = `Fecha y hora seleccionada: ${datos[0].fecha} ${datos[0].hora}`;
 
     // Función para actualizar el marcador y la información de fecha y hora
     function actualizarMarker(pos) {
