@@ -21,7 +21,7 @@ body {
     left: 0;
     background-color: #0b1016;
     overflow-x: hidden;
-    padding-top: 60px; /* Ajustar en caso de tener un header */
+    padding-top: 50px; /* Ajustar en caso de tener un header */
   }
   
   /* El mapa ahora ocupará todo el alto y el ancho disponible después del sidebar */
