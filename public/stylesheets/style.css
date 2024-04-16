@@ -113,3 +113,12 @@ display: inline; /* Hacer que el texto esté en la misma línea que el círculo 
 font-weight: bold; /* Texto en negrita */
 vertical-align: middle; /* Alinear verticalmente con el círculo */
 }
+
+#sidebar p {
+  font-family: 'Arial', sans-serif; /* Cambiar la fuente si es necesario */
+  color: white; /* Cambiar el color del texto a blanco */
+  font-size: 16px; /* Hacer el texto más grande */
+  line-height: 1.6; /* Espaciado entre líneas para mejorar la legibilidad */
+  letter-spacing: 0.5px; /* Espaciado entre letras para una mejor claridad */
+  margin: 10px 0; /* Espacio vertical entre los elementos del párrafo */
+}
