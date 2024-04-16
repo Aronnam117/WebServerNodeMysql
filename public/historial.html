@@ -64,9 +64,9 @@
       // Establece una conexión WebSocket y envía los datos de filtrado
       const socket = io.connect();
       socket.emit('filtrarDatos', {
-        fechaInicio: fechaSinHoraInicio,
+        fechaInicio: fechaInicio,
         horaInicio: horaInicio,
-        fechaFin: fechaSinHoraFin,
+        fechaFin: fechaFin,
         horaFin: horaFin
       });
 
