@@ -7,16 +7,15 @@
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <h1>Información Satelital</h1>
-  <div class="live-indicator">
-    <span class="live-pulse"></span>
-    <span class="live-text">Live Track</span>
-  </div>
-
   <button onclick="toggleSidebar()" id="toggleSidebarButton">☰</button>
   <div id="datosContainer"></div>
     <div id="sidebar" class="sidebar open" style="color: #f4f4f9;">
     <button onclick="toggleSidebar()" id="closeSidebarButton" class="closebtn">×</button>
+    <h1>Información Satelital</h1>
+  <div class="live-indicator">
+    <span class="live-pulse"></span>
+    <span class="live-text">Live Track</span>
+  </div>
       <p id="latitud">Latitud: </p>
       <p id="longitud">Longitud: </p>
       <p id="fecha">Fecha: </p>
