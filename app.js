@@ -199,19 +199,13 @@ function toggleSidebar() {
   var sidebar = document.getElementById("sidebar");
   var mapa = document.getElementById("mapa");
   
-  // Si el sidebar ya está abierto, entonces lo cierra, si no, lo abre.
-  if (sidebar.classList.contains('open')) {
-      sidebar.classList.remove('open');
-      mapa.classList.remove('shifted');
+  if (sidebar.style.width === '250px') {
+    sidebar.style.width = '0';
+    mapa.style.width = '100%'; // El mapa ahora ocupa el 100% del ancho
   } else {
-      sidebar.classList.add('open');
-      mapa.classList.add('shifted');
+    sidebar.style.width = '250px';
+    mapa.style.width = 'calc(100% - 250px)'; // Reducir el ancho del mapa para hacer espacio al sidebar
   }
 }
-
-// Ejecuta esta función en la carga de la página para configurar el estado inicial.
-document.addEventListener('DOMContentLoaded', (event) => {
-  toggleSidebar(); // Esto asegura que el sidebar y el mapa tengan los estados correctos.
-});
 // Exportar la aplicación Express
 module.exports = app;
