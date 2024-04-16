@@ -118,7 +118,7 @@
       const punto = datos[pos];
       const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
       marcadorSlider.setPosition(latLng);
-      info.textContent = `Fecha y hora seleccionada: ${punto.fechaSinHora} ${punto.hora}`;
+      info.textContent = `Fecha y hora seleccionada: ${punto.fecha} ${punto.hora}`;
     }
 
     // Evento para cuando el valor del slider cambia
