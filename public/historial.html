@@ -114,15 +114,14 @@
 
     // Función para actualizar el marcador y la información de fecha y hora
     // Función para actualizar el marcador y la información de fecha y hora
+// Función para actualizar el marcador y la información de fecha y hora
 function actualizarMarker(pos) {
   const punto = datos[pos];
   const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
   marcadorSlider.setPosition(latLng);
 
-  // Formatear la fecha eliminando "T00:00:00.000Z"
-  const fecha = punto.fecha.split('T')[0]; 
-  const hora = punto.hora; // Mantener la hora sin cambios
-  const fechaHora = `${fecha} ${hora}`;
+  // Formatear la fecha eliminando "T00:00:00.000Z" y la hora
+  const fechaHora = new Date(punto.fecha).toLocaleString();
   info.textContent = `Fecha y hora seleccionada: ${fechaHora}`;
 }
 
