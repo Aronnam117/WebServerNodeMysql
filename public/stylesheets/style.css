@@ -70,3 +70,8 @@ body, html {
     margin: 10px 0;
   }
 }
+
+element.style {
+  height: calc(100% - 60px);
+  color: white;
+}
