@@ -131,8 +131,8 @@ vertical-align: middle; /* Alinear verticalmente con el círculo */
 }
 
 /* Cuando el sidebar esté cerrado, muestra el botón */
-.sidebar:not(.open) + #mapContainer #openSidebarButton {
-  display: block;
+.sidebar:not(.open) + #mapa {
+  width: 100%; /* Asegurarse de que el mapa ocupe todo el espacio cuando el sidebar esté cerrado */
 }
 
 /* Estilo para el contenedor del mapa cuando el sidebar está abierto */

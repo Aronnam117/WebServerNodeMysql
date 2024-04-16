@@ -11,11 +11,10 @@ body {
   }
   
   #mapa {
-    height: 100vh; /* 100% de la altura de la ventana gráfica */
-    transition: width 0.5s, margin-left 0.5s; /* Transiciones suaves para el cambio de ancho y margen */
-    border-radius: 0; /* Puedes quitar los bordes redondeados si quieres que ocupe toda la pantalla */
-    box-shadow: none; /* Puedes quitar la sombra si quieres que ocupe toda la pantalla */
-  }
+    height: calc(100vh - 60px); /* Ajustar para que el mapa no cubra el header si existe uno */
+    width: calc(100% - 250px); /* Ajustar el ancho del mapa cuando el sidebar esté abierto */
+    transition: width 0.5s, margin-left 0.5s; /* Asegurarse de que la transición sea suave */
+}
   
   #mapa.sidebar-open {
   width: calc(100vw); /* Reduce el ancho del mapa en 250px cuando el sidebar esté abierto */
@@ -205,3 +204,7 @@ body {
     max-width: 80%;
     height: auto;
   }
+
+  label {
+    color: white; /* Cambiar el color de las etiquetas a blanco */
+}

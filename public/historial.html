@@ -128,11 +128,15 @@
 
     // Función para actualizar el marcador y la información de fecha y hora
     function actualizarMarker(pos) {
-      const punto = datos[pos];
-      const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
-      marcadorSlider.setPosition(latLng);
-      info.textContent = `${punto.fecha} ${punto.hora}`;
-    }
+    const punto = datos[pos];
+    const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
+    marcadorSlider.setPosition(latLng);
+
+    // Formatear fecha y hora para mostrar solo la fecha y la hora sin el T y los milisegundos
+    const fecha = new Date(punto.fecha).toLocaleDateString();
+    const hora = new Date(punto.fecha).toLocaleTimeString();
+    info.textContent = `${fecha} ${hora}`;
+}
 
     // Evento para cuando el valor del slider cambia
     slider.oninput = function() {
