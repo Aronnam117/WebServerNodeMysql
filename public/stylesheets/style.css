@@ -1,140 +1,151 @@
-body, html {
-  height: 100%;
+body {
+  font-family: Arial, sans-serif; /* Establece una tipografía limpia y moderna */
+  background-color: #f4f4f9; /* Color de fondo suave */
   margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif;
+  padding: 0; /* Espacio alrededor del contenido */
 }
 
 h1 {
-  color: #C3B582;
-  text-align: center;
+  color: #C3B582; /* Color oscuro para el título */
+  text-align: center; /* Centra el título */
 }
 
-/* Sidebar styles */
-.sidebar {
-  height: 100%;
-  width: 250px; /* Width for the open sidebar */
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  background-color: #0b1016;
-  overflow-x: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
+#mapa {
+height: 100vh; /* 100% de la altura del viewport */
+border-radius: 8px; /* Bordes redondeados */
+box-shadow: 0 4px 8px rgba(0,0,0,0); /* Sombra sutil */
+width: calc(100% - 250px); /* Ajustar el ancho si el sidebar está visible */
+transition: width 0.5s; /* Transición suave para el ancho al abrir/cerrar el sidebar */
 }
 
-/* Button to open/close sidebar */
-#toggleSidebarButton {
-  background-color: #C3B582;
+#mapa.sidebar-open {
+width: calc(100vw); /* Reduce el ancho del mapa en 250px cuando el sidebar esté abierto */
+transition: width 0.5s; /* Transición suave para el cambio de ancho */
+}
+
+button {
+  background-color: #C3B582; /* Color azul para botones */
   color: #0b1016;
   border: none;
   padding: 10px 20px;
-  font-size: 16px;
   border-radius: 5px;
-  cursor: pointer;
+  cursor: pointer; /* Cursor tipo mano al pasar el ratón */
+  margin-right: 10px; /* Separación entre botones */
+  font-size: 16px; /* Tamaño de letra más grande para mejor lectura */
+}
+
+button:hover {
+  background-color: #C3B582; /* Color azul más oscuro al pasar el ratón */
+}
+
+p {
+  margin: 5px 0; /* Reduce el margen entre párrafos para compactar */
+}
+
+.sidebar {
+    height: 100%;
+    width: 0; /* Start with a zero width */
+    position: fixed; 
+    z-index: 1; 
+    top: 0; 
+    left: 0;
+    background-color: #0b1016; 
+    overflow-x: hidden; 
+    transition: 0.5s; 
+    padding-top: 60px;
+  }
+
+  /* When the sidebar has width set to 250px, it should slide in */
+  .sidebar.open {
+    width: 250px; /* Width of the open sidebar */
+  }
+
+  /* Style adjustments for the main content when sidebar is open */
+  .main-content.shifted {
+    margin-left: 250px;
+  }
+
+  .logo-container {
   position: absolute;
-  z-index: 2;
-  top: 10px;
-  left: 10px;
-}
-
-#toggleSidebarButton:hover {
-  background-color: #C3B582;
-}
-
-/* Close button inside the sidebar */
-.closebtn {
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 36px;
-  color: #818181;
-}
-
-/* Styles for the content inside the sidebar */
-.sidebar p,
-.sidebar button {
-  color: #C3B582;
-  padding: 10px 15px;
-  text-decoration: none;
-  display: block;
-  transition: 0.3s;
-}
-
-.sidebar button:hover {
-  background-color: #C3B582;
-}
-
-/* Main content when sidebar is open */
-.main-content.shifted {
-  margin-left: 250px; /* Make space for the open sidebar */
-  transition: margin-left 0.5s;
-}
-
-/* Adjusting the map size when sidebar is closed */
-.main-content {
-  height: calc(100vh - 60px);
-  transition: margin-left 0.5s;
-}
-
-.sidebar:not(.open) ~ .main-content {
-  margin-left: 0; /* Full width when the sidebar is closed */
-}
-
-/* Live indicator styles */
-.live-indicator {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.live-pulse {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: red;
-  margin-right: 5px;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.5); opacity: 0.5; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.live-text {
-  display: inline;
-  font-weight: bold;
-  vertical-align: middle;
-}
-
-/* Additional adjustments for the sidebar logo and bottom space */
-.logo-container {
-  position: absolute;
-  bottom: 35px;
+  bottom: 35px; /* Aumenta este valor según lo lejos que quieras el logo del borde inferior */
   width: 100%;
   text-align: center;
-  padding: 10px;
+  padding: 10px; /* Ajusta el relleno según sea necesario */
 }
 
 .sidebar-logo {
-  max-width: 80%;
+  max-width: 80%; /* O un porcentaje específico si el logo es demasiado grande */
   height: auto;
 }
 
-/* Styles for the map container */
-#mapa {
-  height: calc(100vh - 60px);
-  width: calc(100% - 250px);
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0);
-  transition: width 0.5s;
+.live-indicator {
+text-align: center; /* Centrar el indicador */
+margin-top: 10px; /* Espacio arriba del indicador */
 }
 
-/* Make the map full width when the sidebar is not open */
-.sidebar:not(.open) ~ #mapa {
-  width: 100vw;
+.live-pulse {
+display: inline-block;
+width: 15px; /* Tamaño del círculo */
+height: 15px; /* Tamaño del círculo */
+border-radius: 50%; /* Hacerlo redondo */
+background-color: red; /* Color rojo para el círculo */
+margin-right: 5px; /* Espacio entre el círculo y el texto */
+animation: pulse 1s infinite; /* Animación llamada pulse que corre continuamente */
+}
+
+@keyframes pulse {
+0% {
+  transform: scale(1); /* Comenzar sin escalar */
+  opacity: 1; /* Completamente visible */
+}
+50% {
+  transform: scale(1.5); /* Escalar a 1.5 veces el tamaño */
+  opacity: 0.5; /* Semi-transparente */
+}
+100% {
+  transform: scale(1); /* Volver al tamaño original */
+  opacity: 1; /* Completamente visible */
+}
+}
+
+.live-text {
+display: inline; /* Hacer que el texto esté en la misma línea que el círculo */
+font-weight: bold; /* Texto en negrita */
+vertical-align: middle; /* Alinear verticalmente con el círculo */
+}
+
+#sidebar p {
+  font-family: 'Arial', sans-serif; /* Cambiar la fuente si es necesario */
+  color: white; /* Cambiar el color del texto a blanco */
+  font-size: 16px; /* Hacer el texto más grande */
+  line-height: 1.6; /* Espaciado entre líneas para mejorar la legibilidad */
+  letter-spacing: 0.5px; /* Espaciado entre letras para una mejor claridad */
+  margin: 10px 0; /* Espacio vertical entre los elementos del párrafo */
+}
+
+#openSidebarButton {
+  display: none; /* Oculta el botón por defecto */
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2; /* Asegúrate de que esté sobre el mapa */
+}
+
+/* Cuando el sidebar esté cerrado, muestra el botón */
+.sidebar:not(.open) + #mapContainer #openSidebarButton {
+  display: block;
+}
+
+/* Estilo para el contenedor del mapa cuando el sidebar está abierto */
+.main-content {
+  transition: margin-left 0.5s;
+}
+
+/* Ajustar el contenedor del mapa para llenar toda la pantalla cuando el sidebar está cerrado */
+.sidebar:not(.open) + #mapContainer {
+  margin-left: 0;
+}
+
+.sidebar.closed + #mapa {
+  margin-left: 0;
 }
