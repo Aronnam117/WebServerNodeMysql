@@ -132,9 +132,11 @@
     const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
     marcadorSlider.setPosition(latLng);
 
-    // Formatear fecha y hora para mostrar solo la fecha y la hora sin el T y los milisegundos
-    const fecha = new Date(punto.fecha).toLocaleDateString();
-    const hora = new Date(punto.fecha).toLocaleTimeString();
+    // Asumiendo que 'punto.fecha' contiene la fecha y hora en formato ISO (ejemplo: "2024-04-09T14:22:00.000Z")
+    const fechaHora = new Date(punto.fecha);
+    const fecha = fechaHora.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const hora = fechaHora.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
     info.textContent = `${fecha} ${hora}`;
 }
 

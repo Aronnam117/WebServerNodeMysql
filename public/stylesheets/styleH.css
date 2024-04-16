@@ -11,9 +11,9 @@ body {
   }
   
   #mapa {
-    height: calc(100vh - 60px); /* Ajustar para que el mapa no cubra el header si existe uno */
-    width: calc(100% - 250px); /* Ajustar el ancho del mapa cuando el sidebar esté abierto */
-    transition: width 0.5s, margin-left 0.5s; /* Asegurarse de que la transición sea suave */
+    height: calc(100vh - 60px); /* ajusta 60px si hay un encabezado en la página */
+    width: calc(100% - anchoDelSidebar); /* reemplaza anchoDelSidebar con el ancho actual del sidebar */
+    transition: width 0.5s, margin-left 0.5s;
 }
   
   #mapa.sidebar-open {
