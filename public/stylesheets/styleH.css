@@ -25,11 +25,11 @@ body {
   
   /* El mapa ahora ocupará todo el alto y el ancho disponible después del sidebar */
   #mapa {
-    height: calc(100vh - 60px); /* Ajustar en caso de tener un header */
-    width: calc(100vw - 250px); /* Resta el ancho del sidebar de 250px */
+    height: calc(100vh - 60px); /* Ajustar si hay un header */
+    width: calc(100vw - 250px); /* Resta el ancho del sidebar */
     position: absolute;
-    top: 60px; /* Ajustar en caso de tener un header */
-    left: 250px; /* Igual al ancho del sidebar */
+    top: 60px; /* Ajustar si hay un header */
+    left: 250px; /* Desplazado para hacer espacio al sidebar */
   }
   
   button {
