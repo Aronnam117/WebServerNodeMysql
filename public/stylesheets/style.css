@@ -40,7 +40,7 @@ h1 {
 }
 
 #toggleSidebarButton:hover {
-  background-color: #0056b3;
+  background-color: #C3B582;
 }
 
 /* Close button inside the sidebar */
@@ -56,7 +56,7 @@ h1 {
 /* Styles for the content inside the sidebar */
 .sidebar p,
 .sidebar button {
-  color: white;
+  color: #C3B582;
   padding: 10px 15px;
   text-decoration: none;
   display: block;
@@ -64,7 +64,7 @@ h1 {
 }
 
 .sidebar button:hover {
-  background-color: #575757;
+  background-color: #C3B582;
 }
 
 /* Main content when sidebar is open */

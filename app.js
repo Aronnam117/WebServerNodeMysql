@@ -195,19 +195,22 @@ http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
 });
 
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const openSidebarButton = document.getElementById("openSidebarButton");
+// Esta función se ejecutará cuando se cargue la página
+document.addEventListener('DOMContentLoaded', function() {
+  // Asegúrate de que el sidebar esté abierto al cargar la página
+  document.getElementById('sidebar').classList.add('open');
+});
 
+// Esta función maneja el abrir y cerrar del sidebar
+function toggleSidebar() {
+  var sidebar = document.getElementById("sidebar");
+  // Comprueba si el sidebar tiene la clase 'open'
   if (sidebar.classList.contains('open')) {
     sidebar.classList.remove('open');
-    openSidebarButton.style.display = 'block'; // Muestra el botón para abrir el sidebar
   } else {
     sidebar.classList.add('open');
-    openSidebarButton.style.display = 'none'; // Oculta el botón cuando el sidebar está abierto
   }
 }
-
 
 // Exportar la aplicación Express
 module.exports = app;
