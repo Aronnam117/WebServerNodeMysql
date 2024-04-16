@@ -196,16 +196,21 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 function toggleSidebar() {
+  var body = document.body;
   var sidebar = document.getElementById("sidebar");
   var mapa = document.getElementById("mapa");
-  sidebar.classList.toggle('open');
 
-  if (sidebar.classList.contains('open')) {
-    mapa.style.width = 'calc(100% - 250px)'; // Reduce el ancho del mapa cuando el sidebar está abierto
-    mapa.style.marginLeft = '250px'; // Agrega margen cuando el sidebar está abierto
-  } else {
-    mapa.style.width = '100vw'; // Ajustar el ancho del mapa al 100% del viewport
-    mapa.style.marginLeft = '0'; // Quitar margen para que el mapa se expanda
+  // Verifica si estamos en la página "Historial de Coordenadas"
+  if (!body.classList.contains('historial-page')) {
+    sidebar.classList.toggle('open');
+
+    if (sidebar.classList.contains('open')) {
+      mapa.style.width = 'calc(100% - 250px)'; // Reduce el ancho del mapa cuando el sidebar está abierto
+      mapa.style.marginLeft = '250px'; // Agrega margen cuando el sidebar está abierto
+    } else {
+      mapa.style.width = '100vw'; // Ajustar el ancho del mapa al 100% del viewport
+      mapa.style.marginLeft = '0'; // Quitar margen para que el mapa se expanda
+    }
   }
 }
 
