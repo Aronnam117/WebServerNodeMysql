@@ -66,8 +66,8 @@ body {
   
     .logo-container {
     position: absolute;
-    bottom: 35px; /* Aumenta este valor según lo lejos que quieras el logo del borde inferior */
-    width: 100%;
+    top: 35px; /* Aumenta este valor según lo lejos que quieras el logo del borde inferior */
+    width: 30%;
     text-align: center;
     padding: 10px; /* Ajusta el relleno según sea necesario */
   }
