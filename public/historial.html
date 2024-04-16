@@ -78,12 +78,31 @@
     }
 
     // Inicializa el mapa de Google Maps
-    function initMap() {
+    window.onload = function() {
+  initMap();
+};
+
+function initMap() {
+  // Hacer una solicitud HTTP para obtener la última ubicación desde el backend
+  fetch('/coordenadas/ultima')
+    .then(response => response.json())
+    .then(data => {
+      const ultimaPosicion = data.length > 0 ? { lat: parseFloat(data[0].latitud), lng: parseFloat(data[0].longitud) } : { lat: 0, lng: 0 };
+
       mapa = new google.maps.Map(document.getElementById('mapa'), {
-        zoom: 12,
-        center: { lat: 0, lng: 0 } // Centro inicial del mapa
+        zoom: 25, // Nivel de zoom deseado
+        center: ultimaPosicion // Centrar el mapa en la última posición conocida
       });
-    }
+
+      // Coloca un marcador en la última posición conocida
+      new google.maps.Marker({
+        position: ultimaPosicion,
+        map: mapa,
+        title: 'Última posición'
+      });
+    })
+    .catch(error => console.error('Error al obtener la última posición:', error));
+}
 
     // Dibuja la ruta en el mapa a partir de los datos de la base de datos
     function dibujarRuta(datos) {
