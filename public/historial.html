@@ -28,7 +28,7 @@
       </div>
       <div class="slider-section">
         <input type="range" id="slider" min="0" value="0" style="width: 100%;" />
-        <p id="info">Fecha y hora seleccionada: <span id="fechaHora"></span></p>
+        <p id="info"> <span id="fechaHora"></span></p>
       </div>
     </div>
     
@@ -47,8 +47,10 @@
 
     // Esta función se llama cuando el usuario hace clic en "Filtrar"
     function filtrarHistorial() {
+      var fechaSinHora = data.fechaInicio.split('T')[0]; // Esto dará "2024-04-16"
       const fechaInicio = document.getElementById('fechaInicio').value;
       const horaInicio = document.getElementById('horaInicio').value;
+      var fechaSinHora = data.fechaFin.split('T')[0]; // Esto dará "2024-04-16"
       const fechaFin = document.getElementById('fechaFin').value;
       const horaFin = document.getElementById('horaFin').value;
 
