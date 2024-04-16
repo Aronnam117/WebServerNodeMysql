@@ -86,41 +86,7 @@
     height: auto;
 }
 
-.live-indicator {
-  text-align: center; /* Centrar el indicador */
-  margin-top: 10px; /* Espacio arriba del indicador */
-}
 
-.live-pulse {
-  display: inline-block;
-  width: 15px; /* Tamaño del círculo */
-  height: 15px; /* Tamaño del círculo */
-  border-radius: 50%; /* Hacerlo redondo */
-  background-color: red; /* Color rojo para el círculo */
-  margin-right: 5px; /* Espacio entre el círculo y el texto */
-  animation: pulse 1s infinite; /* Animación llamada pulse que corre continuamente */
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1); /* Comenzar sin escalar */
-    opacity: 1; /* Completamente visible */
-  }
-  50% {
-    transform: scale(1.5); /* Escalar a 1.5 veces el tamaño */
-    opacity: 0.5; /* Semi-transparente */
-  }
-  100% {
-    transform: scale(1); /* Volver al tamaño original */
-    opacity: 1; /* Completamente visible */
-  }
-}
-
-.live-text {
-  display: inline; /* Hacer que el texto esté en la misma línea que el círculo */
-  font-weight: bold; /* Texto en negrita */
-  vertical-align: middle; /* Alinear verticalmente con el círculo */
-}
   </style>
 </head>
 <body>
