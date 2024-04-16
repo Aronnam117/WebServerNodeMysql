@@ -3,24 +3,28 @@
 <head>
   <meta charset="utf-8">
   <title>Información Satelital</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
-  <style>
-    #mapa {
-      height: 400px;
-    }
-  </style>
 </head>
 <body>
-  <h1>Información Satelital</h1>
-  <div id="datosContainer">
-    <p id="latitud">Latitud: </p>
-    <p id="longitud">Longitud: </p>
-    <p id="fecha">Fecha: </p>
-    <p id="hora">Hora: </p>
-    <button onclick="window.location.href='/coordenadas';">Ver Coordenadas</button>
-    <button onclick="window.location.href='/historial';">Ver Historial</button>
+  <div id="header">
+    <div id="logo">Logo</div>
+    <h1>Información Satelital</h1>
   </div>
-  <div id="mapa"></div>
+
+  <div id="wrapper">
+    <div id="sidebar">
+      <button onclick="toggleSidebar()" id="toggleSidebarButton">☰</button>
+      <p id="latitud">Latitud: </p>
+      <p id="longitud">Longitud: </p>
+      <p id="fecha">Fecha: </p>
+      <p id="hora">Hora: </p>
+      <button onclick="window.location.href='/historial';">Ver Historial</button>
+    </div>
+    
+    <div id="mapa"></div>
+  </div>
+
   <script>
     let mapa; // Variable global para el mapa
     let polylinePath = []; // Almacena las coordenadas de la polilínea
@@ -75,6 +79,7 @@
       });
     }
   </script>
- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
 </html>

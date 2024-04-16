@@ -197,21 +197,15 @@ http.listen(80, '0.0.0.0', () => {
 
 function toggleSidebar() {
   var sidebar = document.getElementById("sidebar");
-  var mainContent = document.getElementById("main"); // Make sure you have a container with id="main" for the main content
+  // Toggle the 'open' class on the sidebar
+  sidebar.classList.toggle('open');
 
-  // Check the current state of the sidebar and toggle its width
-  if (sidebar.style.width === "250px") {
-    sidebar.style.width = "0";
-    // Optional: If you want the main content to shift when the sidebar closes
-    if (mainContent) {
-      mainContent.style.marginLeft = "0";
-    }
+  var mapa = document.getElementById("mapa");
+  // Adjust the left margin of the map when the sidebar is opened/closed
+  if (sidebar.classList.contains('open')) {
+    mapa.style.marginLeft = "250px";
   } else {
-    sidebar.style.width = "250px";
-    // Optional: If you want the main content to shift when the sidebar opens
-    if (mainContent) {
-      mainContent.style.marginLeft = "250px";
-    }
+    mapa.style.marginLeft = "0";
   }
 }
 // Exportar la aplicación Express
