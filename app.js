@@ -195,12 +195,6 @@ http.listen(80, '0.0.0.0', () => {
   console.log('Servidor web escuchando en el puerto 80');
 });
 
-// Esta función se ejecutará cuando se cargue la página
-document.addEventListener('DOMContentLoaded', function() {
-  // Asegúrate de que el sidebar esté abierto al cargar la página
-  document.getElementById('sidebar').classList.add('open');
-});
-
 // Esta función maneja el abrir y cerrar del sidebar
 function toggleSidebar() {
   var sidebar = document.getElementById("sidebar");
