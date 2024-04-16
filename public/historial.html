@@ -110,20 +110,23 @@
     const info = document.getElementById('fechaHora');
     slider.max = datos.length - 1;
     slider.value = 0;
+    const fechaHora = punto.fecha.replace("T00:00:00.000Z", "") + " " + punto.hora;
     info.textContent = `Fecha y hora seleccionada: ${datos[0].fecha} ${datos[0].hora}`;
 
-    // Función para actualizar el marcador y la información de fecha y hora
     function actualizarMarker(pos) {
-      const punto = datos[pos];
-      const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
-      marcadorSlider.setPosition(latLng);
-      info.textContent = `Fecha y hora seleccionada: ${punto.fecha} ${punto.hora}`;
-    }
+  const punto = datos[pos];
+  const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
+  marcadorSlider.setPosition(latLng);
 
-    // Evento para cuando el valor del slider cambia
-    slider.oninput = function() {
-      actualizarMarker(this.value);
-    };
+  // Formatear la fecha y hora eliminando "T00:00:00.000Z"
+  const fechaHora = punto.fecha.replace("T00:00:00.000Z", "") + " " + punto.hora;
+  info.textContent = `Fecha y hora seleccionada: ${fechaHora}`;
+}
+
+// Evento para cuando el valor del slider cambia
+slider.oninput = function() {
+  actualizarMarker(this.value);
+};
   }
 }
 
