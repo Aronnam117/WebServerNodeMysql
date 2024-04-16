@@ -131,23 +131,10 @@
   const punto = datos[pos];
   const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
   marcadorSlider.setPosition(latLng);
-
-  // Asumiendo que 'punto.fecha' es una fecha en formato 'YYYY-MM-DD'
-  // y 'punto.hora' es una hora en formato 'HH:MM:SS'
-  const fechaHora = `${punto.fecha} ${punto.hora}`;
-  const fechaHoraObj = new Date(fechaHora);
   
-  // Utiliza 'toLocaleString' para mostrar la fecha y la hora en un formato amigable
-  // 'toLocaleString' combina la fecha y la hora en una cadena
-  info.textContent = fechaHoraObj.toLocaleString([], {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false // Puedes cambiar esto a 'true' si prefieres el formato de 12 horas
-  });
+  // Dividir la cadena de fecha y hora en la 'T' y tomar solo la parte de la fecha
+  var fechaSinHora = punto.fecha.split('T')[0];
+  info.textContent = fechaSinHora + ' ' + punto.hora;
 }
 
     // Evento para cuando el valor del slider cambia
