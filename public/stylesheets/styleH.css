@@ -98,6 +98,9 @@ body {
     width: 50%; /* Ocupa el ancho completo del sidebar */
     text-align: center; /* Centra el logo dentro del contenedor */
     padding: 10px 0; /* Agrega algo de relleno en la parte superior e inferior */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+  color: inherit; /* El color del texto hereda del elemento padre */
+  display: inline-block;
   }
   
   .sidebar-logo {
