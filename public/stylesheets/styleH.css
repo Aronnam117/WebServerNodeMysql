@@ -25,7 +25,7 @@ body {
   
   /* El mapa ahora ocupará todo el alto y el ancho disponible después del sidebar */
   #mapa {
-    height: calc 100vh; 
+    height: 100vh; 
     width: calc(100vw - 250px); /* Resta el ancho del sidebar */
     position: absolute;
     top: 60px; /* Ajustar si hay un header */
