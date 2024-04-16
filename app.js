@@ -197,15 +197,14 @@ http.listen(80, '0.0.0.0', () => {
 
 function toggleSidebar() {
   var sidebar = document.getElementById("sidebar");
-  // Toggle the 'open' class on the sidebar
-  sidebar.classList.toggle('open');
-
   var mapa = document.getElementById("mapa");
-  // Adjust the left margin of the map when the sidebar is opened/closed
-  if (sidebar.classList.contains('open')) {
-    mapa.style.marginLeft = "250px";
+  
+  if (sidebar.style.width === '250px') {
+    sidebar.style.width = '0';
+    mapa.style.width = '100%'; // El mapa ahora ocupa el 100% del ancho
   } else {
-    mapa.style.marginLeft = "0";
+    sidebar.style.width = '250px';
+    mapa.style.width = 'calc(100% - 250px)'; // Reducir el ancho del mapa para hacer espacio al sidebar
   }
 }
 // Exportar la aplicación Express
