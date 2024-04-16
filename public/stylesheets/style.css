@@ -146,6 +146,3 @@ vertical-align: middle; /* Alinear verticalmente con el círculo */
   margin-left: 0; /* Quitar el margen izquierdo para que se expanda completamente */
 }
 
-.sidebar.closed + #mapa {
-  margin-left: 0;
-}
