@@ -131,7 +131,8 @@
       const socket = io();
 
       socket.on('datosActualizados', (data) => {
-        let fecha = data.fecha.split('T')[0]; 
+        let fecha = new Date(data.fecha).toLocaleDateString();
+        let hora = data.hora.split('.')[0];
         // Actualizar la interfaz de usuario con los nuevos datos
         document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
         document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;

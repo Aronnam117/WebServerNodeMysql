@@ -1,62 +1,108 @@
 body, html {
-  height: 100%; /* Esto asegura que el sidebar pueda extenderse al 100% de la altura de la página */
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: 'Arial', sans-serif;
-  background-color: #f4f4f9; /* Color de fondo suave para todo el documento */
+  background-color: #f4f4f9;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+#datosContainer {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin: 20px 0;
+}
+
+#mapa {
+  height: 400px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+p {
+  margin: 5px 0;
 }
 
 /* Sidebar styles */
 .sidebar {
-  background-color: #fff; /* Fondo blanco para el sidebar */
-  color: #333; /* Texto oscuro para mejor contraste */
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil para dar profundidad */
-  border-radius: 8px; /* Bordes redondeados para el estilo */
+  height: 100%;
+  width: 0; /* Start with zero width */
+  position: fixed; 
+  z-index: 1; 
+  top: 0; 
+  left: 0;
+  background-color: #111; /* Dark background for the sidebar */
+  overflow-x: hidden; 
+  transition: 0.5s; 
+  padding-top: 60px;
 }
-
 
 /* Sidebar open state */
 .sidebar.open {
-  width: 250px; /* Ancho del sidebar abierto */
-}
-/* Main content styles */
-.main-content {
-  transition: margin-left 0.5s; /* Smooth transition for content shift */
+  width: 250px; /* Width of the open sidebar */
 }
 
-/* Shifted state of main content when sidebar is open */
+/* Main content styles */
+.main-content {
+  transition: margin-left 0.5s;
+}
+
+/* Shifted state of the main content when sidebar is open */
 .main-content.shifted {
   margin-left: 250px;
 }
 
 /* Sidebar close button */
-.sidebar a.closebtn {
+.closebtn {
+  cursor: pointer;
   position: absolute;
   top: 0;
   right: 25px;
   font-size: 36px;
   margin-left: 50px;
-  color: #818181; /* Light grey color for the close button */
-  padding: 8px 8px;
+  color: white;
 }
 
 /* Sidebar content styles */
-.sidebar p, .sidebar button {
-  color: #333; /* Darker text for better contrast on white background */
-  padding: 10px 15px;
-  text-decoration: none;
-  display: block;
-  transition: 0.3s;
+#sidebar p, #sidebar button {
+  color: white; /* White text for all elements inside the sidebar */
+  margin: 20px 0; /* Increased margin for vertical spacing */
+  padding: 0 20px; /* Padding for content alignment */
 }
 
-.sidebar button:hover {
-  background-color: #575757; /* Lighter grey background on hover */
+/* Style for the last button to make it clear it's a button */
+#sidebar button:last-child {
+  border: 1px solid white; /* White border for the button */
+  padding: 10px;
+  margin-top: 20px; /* Extra space above the button */
+  background-color: transparent; /* Transparent background */
+  display: block; /* Display as block to fill width */
 }
 
 /* Toggle button to open/close sidebar */
 #toggleSidebarButton {
-  background-color: #007bff; /* Color azul para botones */
+  background-color: #007bff; 
   color: white;
   border: none;
   padding: 10px 20px;
@@ -64,77 +110,16 @@ body, html {
   border-radius: 5px;
   cursor: pointer;
   position: fixed;
-  z-index: 2; /* Asegúrate de que el botón esté sobre el contenido */
+  z-index: 2;
   top: 10px;
   left: 10px;
 }
 
 #toggleSidebarButton:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
 }
 
-/* Adjustments for smaller screens */
 @media screen and (max-width: 768px) {
-  .sidebar.open { width: 100%; } /* En pantallas pequeñas, el sidebar toma todo el ancho */
-  .main-content.shifted { margin-left: 0; } /* El contenido principal vuelve a la posición original */
-}
-
-.closebtn {
-  cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 36px;
-  color: #818181;
-}
-
-#datosContainer {
-  overflow-y: auto; /* Permite desplazamiento si el contenido es muy alto */
-  margin-bottom: 20px; /* Margen inferior para separar del final del sidebar */
-}
-/* Target all paragraph elements directly inside #datosContainer */
-#datosContainer p,
-#datosContainer button {
-  margin: 15px 0;
-}
-
-/* Estilo para el botón de historial al final del sidebar */
-#datosContainer button:last-child {
-  margin-top: auto; /* Empuja el botón hacia abajo */
-}
-
-/* Additional styles for the last button to push it to the bottom */
-#sidebar button:last-child {
-  margin-top: auto; /* Push the button to the bottom */
-}
-
-#mapa {
-  height: calc(100vh - 40px); /* Ajusta la altura para que tome todo el espacio vertical disponible */
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  margin: 20px; /* Espaciado alrededor del mapa */
-  transition: margin-left 0.5s; /* Transición suave al abrir/cerrar el sidebar */
-}
-
-.main-content.shifted {
-  margin-left: 250px; /* Margen izquierdo igual al ancho del sidebar */
-}
-
-#sidebar p {
-  color: white; /* Cambia el color del texto a blanco */
-  margin: 10px 0; /* Aumenta el espacio vertical entre los elementos */
-}
-
-#sidebar button {
-  /* Tus estilos existentes para el botón */
-  display: block; /* Asegúrate de que el botón se muestre como un bloque */
-  width: calc(100% - 30px); /* Ajusta el ancho y considera el padding */
-  margin: 10px 15px; /* Ajusta el margen para centrar horizontalmente */
-  text-align: center; /* Centra el texto dentro del botón */
-  background-color: #333; /* Color de fondo del botón */
-  border: none; /* Remueve el borde del botón */
-}
-
-.closebtn, .toggle-btn {
-  color: white; /* Cambia el color del texto a blanco */
+  .sidebar.open { width: 100%; }
+  .main-content.shifted { margin-left: 0; }
 }
