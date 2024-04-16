@@ -149,3 +149,59 @@ body {
   .sidebar.closed + #mapa {
     margin-left: 0;
   }
+
+  /* Estilos para el contenido del sidebar */
+.sidebar-content {
+    padding: 20px;
+  }
+  
+  .filter-section {
+    margin-bottom: 20px;
+  }
+  
+  .slider-section {
+    margin-top: 20px;
+  }
+  
+  /* Estilos para los inputs y botón en el sidebar */
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  input[type="date"],
+  input[type="time"],
+  button {
+    width: calc(100% - 10px); /* Ajustar el ancho del input/botón al 100% del contenedor */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Incluir el borde en el tamaño total */
+  }
+  
+  button {
+    background-color: #C3B582;
+    color: #0b1016;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #9B8E5B;
+  }
+  
+  /* Estilos para el slider y la información en el sidebar */
+  #slider {
+    margin-bottom: 10px;
+  }
+  
+  #info {
+    margin-top: 10px;
+  }
+  
+  /* Otros estilos */
+  .sidebar-logo {
+    max-width: 80%;
+    height: auto;
+  }
