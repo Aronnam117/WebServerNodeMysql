@@ -3,32 +3,112 @@
 <head>
   <meta charset="utf-8">
   <title>Información Satelital</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
+  <style>
+     body {
+    font-family: Arial, sans-serif; /* Establece una tipografía limpia y moderna */
+    background-color: #f4f4f9; /* Color de fondo suave */
+    margin: 0;
+    padding: 20px; /* Espacio alrededor del contenido */
+  }
+
+  h1 {
+    color: #333; /* Color oscuro para el título */
+    text-align: center; /* Centra el título */
+  }
+
+  #datosContainer {
+    background-color: #fff; /* Fondo blanco para el contenedor de datos */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
+    margin: 20px 0; /* Margen superior e inferior */
+  }
+
+  #mapa {
+    height: 400px;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
+  }
+
+  button {
+    background-color: #007bff; /* Color azul para botones */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer; /* Cursor tipo mano al pasar el ratón */
+    margin-right: 10px; /* Separación entre botones */
+    font-size: 16px; /* Tamaño de letra más grande para mejor lectura */
+  }
+
+  button:hover {
+    background-color: #0056b3; /* Color azul más oscuro al pasar el ratón */
+  }
+
+  p {
+    margin: 5px 0; /* Reduce el margen entre párrafos para compactar */
+  }
+
+  .sidebar {
+      height: 100%;
+      width: 0; /* Start with a zero width */
+      position: fixed; 
+      z-index: 1; 
+      top: 0; 
+      left: 0;
+      background-color: #111; 
+      overflow-x: hidden; 
+      transition: 0.5s; 
+      padding-top: 60px;
+    }
+
+    /* When the sidebar has width set to 250px, it should slide in */
+    .sidebar.open {
+      width: 250px; /* Width of the open sidebar */
+    }
+
+    /* Style adjustments for the main content when sidebar is open */
+    .main-content.shifted {
+      margin-left: 250px;
+    }
+  </style>
 </head>
 <body>
-  <div id="header">
-    <div id="logo">Logo</div>
-    <h1>Información Satelital</h1>
-  </div>
+  <h1>Información Satelital</h1>
 
-  <div id="wrapper">
-    <div id="sidebar">
-      <button onclick="toggleSidebar()" id="toggleSidebarButton">☰</button>
+  <button onclick="toggleSidebar()" id="toggleSidebarButton">☰</button>
+  <div id="datosContainer"></div>
+    <div id="sidebar" class="sidebar" style="height: calc(100% - 60px);">
+    <button onclick="toggleSidebar()" id="closeSidebarButton" class="closebtn">×</button>
       <p id="latitud">Latitud: </p>
       <p id="longitud">Longitud: </p>
       <p id="fecha">Fecha: </p>
       <p id="hora">Hora: </p>
       <button onclick="window.location.href='/historial';">Ver Historial</button>
     </div>
-    
-    <div id="mapa"></div>
-  </div>
+</div>
+
+  
+<div id="mapa" class="main-content">
 
   <script>
     let mapa; // Variable global para el mapa
     let polylinePath = []; // Almacena las coordenadas de la polilínea
     let marcadorActual; // Almacena el marcador de la ubicación actual
+       
+    function toggleSidebar() {
+      var sidebar = document.getElementById("sidebar");
+      var content = document.getElementById("mapa");
+      // Check if the sidebar is open or closed by checking the presence of the 'open' class
+      if (sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+        content.classList.remove('shifted');
+      } else {
+        sidebar.classList.add('open');
+        content.classList.add('shifted');
+      }
+    }
 
     function iniciarMap() {
       // Configuración inicial del mapa
@@ -79,7 +159,6 @@
       });
     }
   </script>
-  
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
+ <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
 </html>
