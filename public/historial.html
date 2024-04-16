@@ -124,14 +124,14 @@
     const info = document.getElementById('fechaHora');
     slider.max = datos.length - 1;
     slider.value = 0;
-    info.textContent = `Fecha y hora seleccionada: ${datos[0].fecha} ${datos[0].hora}`;
+    info.textContent = `${datos[0].fecha} ${datos[0].hora}`;
 
     // Función para actualizar el marcador y la información de fecha y hora
     function actualizarMarker(pos) {
       const punto = datos[pos];
       const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
       marcadorSlider.setPosition(latLng);
-      info.textContent = `Fecha y hora seleccionada: ${punto.fecha} ${punto.hora}`;
+      info.textContent = `${punto.fecha} ${punto.hora}`;
     }
 
     // Evento para cuando el valor del slider cambia
