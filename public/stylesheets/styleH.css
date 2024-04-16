@@ -1,156 +1,54 @@
 body {
-    font-family: Arial, sans-serif; /* Establece una tipografía limpia y moderna */
-    background-color: #f4f4f9; /* Color de fondo suave */
+    font-family: Arial, sans-serif; 
+    background-color: #f4f4f9;
     margin: 0;
-    padding: 0; /* Espacio alrededor del contenido */
+    padding: 0;
   }
   
   h1 {
-    color: #C3B582; /* Color oscuro para el título */
-    text-align: center; /* Centra el título */
+    color: #C3B582;
+    text-align: center;
   }
   
-  #mapa {
-    height: calc(100vh - 60px); /* ajusta 60px si hay un encabezado en la página */
-    width: calc(100% - anchoDelSidebar); /* reemplaza anchoDelSidebar con el ancho actual del sidebar */
-    transition: width 0.5s, margin-left 0.5s;
-}
+  /* Sidebar estático con un ancho fijo */
+  .sidebar {
+    height: 100%;
+    width: 250px; /* Ancho fijo del sidebar */
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #0b1016;
+    overflow-x: hidden;
+    padding-top: 60px; /* Ajustar en caso de tener un header */
+  }
   
-#mapa.sidebar-open {
-    width: calc(100% - 250px); /* Ajusta 250px al ancho de tu sidebar si es diferente */
-    margin-left: 250px; /* Igual al ancho del sidebar */
+  /* El mapa ahora ocupará todo el alto y el ancho disponible después del sidebar */
+  #mapa {
+    height: calc(100vh - 60px); /* Ajustar en caso de tener un header */
+    width: calc(100vw - 250px); /* Resta el ancho del sidebar de 250px */
+    position: absolute;
+    top: 60px; /* Ajustar en caso de tener un header */
+    left: 250px; /* Igual al ancho del sidebar */
   }
   
   button {
-    background-color: #C3B582; /* Color azul para botones */
+    background-color: #C3B582;
     color: #0b1016;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
-    cursor: pointer; /* Cursor tipo mano al pasar el ratón */
-    margin-right: 10px; /* Separación entre botones */
-    font-size: 16px; /* Tamaño de letra más grande para mejor lectura */
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 16px;
   }
   
   button:hover {
-    background-color: #C3B582; /* Color azul más oscuro al pasar el ratón */
+    background-color: #9B8E5B;
   }
   
-  p {
-    margin: 5px 0; /* Reduce el margen entre párrafos para compactar */
-  }
-  
-  .sidebar {
-      height: 100%;
-      width: 0; /* Start with a zero width */
-      position: fixed; 
-      z-index: 1; 
-      top: 0; 
-      left: 0;
-      background-color: #0b1016; 
-      overflow-x: hidden; 
-      transition: 0.5s; 
-      padding-top: 60px;
-    }
-  
-    /* When the sidebar has width set to 250px, it should slide in */
-    .sidebar.open {
-      width: 250px; /* Width of the open sidebar */
-    }
-  
-    /* Style adjustments for the main content when sidebar is open */
-    .main-content.shifted {
-      margin-left: 250px;
-    }
-  
-    .logo-container {
-    position: absolute;
-    top: 10px; /* Aumenta este valor según lo lejos que quieras el logo del borde supeiro */
-    width: 20%;
-    text-align: center;
-    padding: 10px; /* Ajusta el relleno según sea necesario */
-  }
-  
-  .sidebar-logo {
-    max-width: 80%; /* O un porcentaje específico si el logo es demasiado grande */
-    height: auto;
-  }
-  
-  .live-indicator {
-  text-align: center; /* Centrar el indicador */
-  margin-top: 10px; /* Espacio arriba del indicador */
-  }
-  
-  .live-pulse {
-  display: inline-block;
-  width: 15px; /* Tamaño del círculo */
-  height: 15px; /* Tamaño del círculo */
-  border-radius: 50%; /* Hacerlo redondo */
-  background-color: red; /* Color rojo para el círculo */
-  margin-right: 5px; /* Espacio entre el círculo y el texto */
-  animation: pulse 1s infinite; /* Animación llamada pulse que corre continuamente */
-  }
-  
-  @keyframes pulse {
-  0% {
-    transform: scale(1); /* Comenzar sin escalar */
-    opacity: 1; /* Completamente visible */
-  }
-  50% {
-    transform: scale(1.5); /* Escalar a 1.5 veces el tamaño */
-    opacity: 0.5; /* Semi-transparente */
-  }
-  100% {
-    transform: scale(1); /* Volver al tamaño original */
-    opacity: 1; /* Completamente visible */
-  }
-  }
-  
-  .live-text {
-  display: inline; /* Hacer que el texto esté en la misma línea que el círculo */
-  font-weight: bold; /* Texto en negrita */
-  vertical-align: middle; /* Alinear verticalmente con el círculo */
-  }
-  
-  #sidebar p {
-    font-family: 'Arial', sans-serif; /* Cambiar la fuente si es necesario */
-    color: white; /* Cambiar el color del texto a blanco */
-    font-size: 16px; /* Hacer el texto más grande */
-    line-height: 1.6; /* Espaciado entre líneas para mejorar la legibilidad */
-    letter-spacing: 0.5px; /* Espaciado entre letras para una mejor claridad */
-    margin: 10px 0; /* Espacio vertical entre los elementos del párrafo */
-  }
-  
-  #openSidebarButton {
-    display: none; /* Oculta el botón por defecto */
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 2; /* Asegúrate de que esté sobre el mapa */
-  }
-  
-  /* Cuando el sidebar esté cerrado, muestra el botón */
-  .sidebar:not(.open) + #mapContainer #openSidebarButton {
-    display: block;
-  }
-  
-  /* Estilo para el contenedor del mapa cuando el sidebar está abierto */
-  .main-content {
-    transition: margin-left 0.5s;
-  }
-  
-  /* Ajustar el contenedor del mapa para llenar toda la pantalla cuando el sidebar está cerrado */
-  .sidebar:not(.open) + #mapa {
-    width: 100%; /* Asegúrate de que el mapa ocupe el espacio completo */
-    margin-left: 0;
-  }
-  
-  .sidebar.closed + #mapa {
-    margin-left: 0;
-  }
-
   /* Estilos para el contenido del sidebar */
-.sidebar-content {
+  .sidebar-content {
     padding: 20px;
   }
   
@@ -167,27 +65,18 @@ body {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: white; /* Asegura que las etiquetas sean blancas */
   }
   
   input[type="date"],
   input[type="time"],
   button {
-    width: calc(100% - 10px); /* Ajustar el ancho del input/botón al 100% del contenedor */
+    width: calc(100% - 20px); /* Ajustar el ancho del input/botón al 100% del contenedor menos el padding */
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Incluir el borde en el tamaño total */
-  }
-  
-  button {
-    background-color: #C3B582;
-    color: #0b1016;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #9B8E5B;
+    box-sizing: border-box;
   }
   
   /* Estilos para el slider y la información en el sidebar */
@@ -204,7 +93,9 @@ body {
     max-width: 80%;
     height: auto;
   }
-
-  label {
-    color: white; /* Cambiar el color de las etiquetas a blanco */
-}
+  
+  /* Ocultar los botones no utilizados */
+  #openSidebarButton {
+    display: none;
+  }
+  
