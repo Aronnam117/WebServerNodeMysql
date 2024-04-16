@@ -47,11 +47,11 @@
 
     // Esta función se llama cuando el usuario hace clic en "Filtrar"
     function filtrarHistorial() {
-      var fechaSinHora = data.fechaInicio.split('T')[0]; // Esto dará "2024-04-16"
-      const fechaInicio = document.getElementById('fechaInicio').value;
+      var fechaSinHoraInicio = data.fechaInicio.split('T')[0]; // Esto dará "2024-04-16"
+      const fechaSinHoraInicio = document.getElementById('fechaInicio').value;
       const horaInicio = document.getElementById('horaInicio').value;
-      var fechaSinHora = data.fechaFin.split('T')[0]; // Esto dará "2024-04-16"
-      const fechaFin = document.getElementById('fechaFin').value;
+      var fechaSinHoraFin = data.fechaFin.split('T')[0]; // Esto dará "2024-04-16"
+      const fechaSinHoraFin = document.getElementById('fechaFin').value;
       const horaFin = document.getElementById('horaFin').value;
 
       console.log(fechaInicio, horaInicio, fechaFin, horaFin);
