@@ -16,9 +16,9 @@ body {
     transition: width 0.5s, margin-left 0.5s;
 }
   
-  #mapa.sidebar-open {
-  width: calc(100vw); /* Reduce el ancho del mapa en 250px cuando el sidebar esté abierto */
-  transition: width 0.5s; /* Transición suave para el cambio de ancho */
+#mapa.sidebar-open {
+    width: calc(100% - 250px); /* Ajusta 250px al ancho de tu sidebar si es diferente */
+    margin-left: 250px; /* Igual al ancho del sidebar */
   }
   
   button {
@@ -141,8 +141,8 @@ body {
   
   /* Ajustar el contenedor del mapa para llenar toda la pantalla cuando el sidebar está cerrado */
   .sidebar:not(.open) + #mapa {
-    width: 100vw; /* Ajustar al 100% del ancho del viewport */
-    margin-left: 0; /* Quitar el margen izquierdo para que se expanda completamente */
+    width: 100%; /* Asegúrate de que el mapa ocupe el espacio completo */
+    margin-left: 0;
   }
   
   .sidebar.closed + #mapa {

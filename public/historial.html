@@ -128,16 +128,26 @@
 
     // Función para actualizar el marcador y la información de fecha y hora
     function actualizarMarker(pos) {
-    const punto = datos[pos];
-    const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
-    marcadorSlider.setPosition(latLng);
+  const punto = datos[pos];
+  const latLng = new google.maps.LatLng(punto.latitud, punto.longitud);
+  marcadorSlider.setPosition(latLng);
 
-    // Asumiendo que 'punto.fecha' contiene la fecha y hora en formato ISO (ejemplo: "2024-04-09T14:22:00.000Z")
-    const fechaHora = new Date(punto.fecha);
-    const fecha = fechaHora.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
-    const hora = fechaHora.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-    info.textContent = `${fecha} ${hora}`;
+  // Asumiendo que 'punto.fecha' es una fecha en formato 'YYYY-MM-DD'
+  // y 'punto.hora' es una hora en formato 'HH:MM:SS'
+  const fechaHora = `${punto.fecha} ${punto.hora}`;
+  const fechaHoraObj = new Date(fechaHora);
+  
+  // Utiliza 'toLocaleString' para mostrar la fecha y la hora en un formato amigable
+  // 'toLocaleString' combina la fecha y la hora en una cadena
+  info.textContent = fechaHoraObj.toLocaleString([], {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false // Puedes cambiar esto a 'true' si prefieres el formato de 12 horas
+  });
 }
 
     // Evento para cuando el valor del slider cambia
