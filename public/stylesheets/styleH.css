@@ -28,7 +28,7 @@ body {
     height: 100vh; 
     width: calc(100vw - 250px); /* Resta el ancho del sidebar */
     position: absolute;
-    top: 60px; /* Ajustar si hay un header */
+    top: 0; /* Ajustar si hay un header */
     left: 250px; /* Desplazado para hacer espacio al sidebar */
   }
   
