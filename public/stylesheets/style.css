@@ -6,120 +6,67 @@ body, html {
   background-color: #f4f4f9;
 }
 
-h1 {
-  color: #333;
-  text-align: center;
-}
-
-#datosContainer {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  margin: 20px 0;
-}
-
-#mapa {
-  height: 400px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 10px;
-  font-size: 16px;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-p {
-  margin: 5px 0;
-}
-
-/* Sidebar styles */
-.sidebar {
+#sidebar {
+  background-color: #111; /* Fondo negro para el sidebar */
+  color: white; /* Texto blanco para todos los elementos dentro del sidebar */
+  width: 250px; /* Ancho del sidebar abierto */
   height: 100%;
-  width: 0; /* Start with zero width */
-  position: fixed; 
-  z-index: 1; 
-  top: 0; 
-  left: 0;
-  background-color: #111; /* Dark background for the sidebar */
-  overflow-x: hidden; 
-  transition: 0.5s; 
-  padding-top: 60px;
-}
-
-/* Sidebar open state */
-.sidebar.open {
-  width: 250px; /* Width of the open sidebar */
-}
-
-/* Main content styles */
-.main-content {
-  transition: margin-left 0.5s;
-}
-
-/* Shifted state of the main content when sidebar is open */
-.main-content.shifted {
-  margin-left: 250px;
-}
-
-/* Sidebar close button */
-.closebtn {
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-  color: white;
-}
-
-/* Sidebar content styles */
-#sidebar p, #sidebar button {
-  color: white; /* White text for all elements inside the sidebar */
-  margin: 20px 0; /* Increased margin for vertical spacing */
-  padding: 0 20px; /* Padding for content alignment */
-}
-
-/* Style for the last button to make it clear it's a button */
-#sidebar button:last-child {
-  border: 1px solid white; /* White border for the button */
-  padding: 10px;
-  margin-top: 20px; /* Extra space above the button */
-  background-color: transparent; /* Transparent background */
-  display: block; /* Display as block to fill width */
-}
-
-/* Toggle button to open/close sidebar */
-#toggleSidebarButton {
-  background-color: #007bff; 
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
   position: fixed;
-  z-index: 2;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  transition: 0.5s; /* Transición suave para el efecto de abrir/cerrar */
+  padding-top: 20px; /* Espacio en la parte superior del sidebar */
+  z-index: 2; /* Asegura que el sidebar se muestre por encima del contenido principal */
+}
+
+#sidebar p {
+  margin: 20px 0; /* Espaciado vertical entre los párrafos */
+}
+
+#sidebar button {
+  background-color: #333; /* Botones con un color de fondo distinto */
+  color: white; /* Texto del botón en blanco */
+  padding: 10px 15px;
+  margin: 20px 0; /* Espaciado vertical para los botones */
+  border: none;
+  text-align: center;
+  width: calc(100% - 30px); /* Calcula el ancho del botón tomando en cuenta el padding */
+  transition: background-color 0.3s; /* Transición para el efecto hover del botón */
+}
+
+#sidebar button:hover {
+  background-color: #555; /* Color al pasar el mouse por encima del botón */
+}
+
+#toggleSidebarButton, #closeSidebarButton {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 30px;
+  position: absolute;
+}
+
+#toggleSidebarButton {
   top: 10px;
   left: 10px;
 }
 
-#toggleSidebarButton:hover {
-  background-color: #0056b3;
+#closeSidebarButton {
+  top: 10px;
+  right: 10px;
+}
+
+#mapa {
+  height: calc(100vh - 50px);
+  margin-left: 250px; /* Mismo ancho que el sidebar para compensar el espacio */
 }
 
 @media screen and (max-width: 768px) {
-  .sidebar.open { width: 100%; }
-  .main-content.shifted { margin-left: 0; }
+  #sidebar { width: 100px; }
+  #mapa { margin-left: 100px; }
+  #sidebar p, #sidebar button {
+    margin: 10px 0;
+  }
 }
