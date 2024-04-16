@@ -119,3 +119,22 @@ body, html {
 .main-content.shifted {
   margin-left: 250px; /* Margen izquierdo igual al ancho del sidebar */
 }
+
+#sidebar p {
+  color: white; /* Cambia el color del texto a blanco */
+  margin: 10px 0; /* Aumenta el espacio vertical entre los elementos */
+}
+
+#sidebar button {
+  /* Tus estilos existentes para el botón */
+  display: block; /* Asegúrate de que el botón se muestre como un bloque */
+  width: calc(100% - 30px); /* Ajusta el ancho y considera el padding */
+  margin: 10px 15px; /* Ajusta el margen para centrar horizontalmente */
+  text-align: center; /* Centra el texto dentro del botón */
+  background-color: #333; /* Color de fondo del botón */
+  border: none; /* Remueve el borde del botón */
+}
+
+.closebtn, .toggle-btn {
+  color: white; /* Cambia el color del texto a blanco */
+}
