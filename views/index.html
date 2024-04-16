@@ -177,26 +177,7 @@
         polyline.setPath(polylinePath);
       });
     }
-     // Este código ahora está en el cliente, no en el servidor
-  function toggleSidebar() {
-      var sidebar = document.getElementById("sidebar");
-      var content = document.getElementById("mapa");
-      
-      // Toggle la clase 'open' para mostrar/ocultar el sidebar
-      if (sidebar.classList.contains('open')) {
-          sidebar.classList.remove('open');
-          content.classList.remove('shifted');
-      } else {
-          sidebar.classList.add('open');
-          content.classList.add('shifted');
-      }
-  }
-
-  // Agrega un evento para cuando se carga el DOM
-  document.addEventListener('DOMContentLoaded', (event) => {
-      // Asegúrate de que el sidebar comience abierto cuando se carga la página
-      toggleSidebar();
-  });
+    
   </script>
  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
