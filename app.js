@@ -196,12 +196,12 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 function toggleSidebar() {
-  var body = document.body;
+  var pathname = window.location.pathname; // Obtiene la ruta de la página actual
   var sidebar = document.getElementById("sidebar");
   var mapa = document.getElementById("mapa");
 
-  // Verifica si estamos en la página "Historial de Coordenadas"
-  if (!body.classList.contains('historial-page')) {
+  // Verifica si estamos en la página principal
+  if (pathname === "/") {
     sidebar.classList.toggle('open');
 
     if (sidebar.classList.contains('open')) {
@@ -211,8 +211,13 @@ function toggleSidebar() {
       mapa.style.width = '100vw'; // Ajustar el ancho del mapa al 100% del viewport
       mapa.style.marginLeft = '0'; // Quitar margen para que el mapa se expanda
     }
+  } else if (pathname === "/historial") {
+    // En la página de historial, el mapa siempre debe ocupar el espacio restante
+    mapa.style.width = 'calc(100% - 250px)'; // Asume que el sidebar siempre está abierto
+    mapa.style.marginLeft = '250px';
   }
 }
+
 
 
 // Exportar la aplicación Express
