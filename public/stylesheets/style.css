@@ -146,3 +146,6 @@ vertical-align: middle; /* Alinear verticalmente con el círculo */
   margin-left: 0;
 }
 
+.sidebar.closed + #mapa {
+  margin-left: 0;
+}
