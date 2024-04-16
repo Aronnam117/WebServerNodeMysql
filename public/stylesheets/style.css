@@ -11,11 +11,10 @@ h1 {
 }
 
 #mapa {
-height: 100vh; /* 100% de la altura del viewport */
-border-radius: 8px; /* Bordes redondeados */
-box-shadow: 0 4px 8px rgba(0,0,0,0); /* Sombra sutil */
-width: calc(100% - 250px); /* Ajustar el ancho si el sidebar está visible */
-transition: width 0.5s; /* Transición suave para el ancho al abrir/cerrar el sidebar */
+  height: 100vh; /* 100% de la altura de la ventana gráfica */
+  transition: width 0.5s, margin-left 0.5s; /* Transiciones suaves para el cambio de ancho y margen */
+  border-radius: 0; /* Puedes quitar los bordes redondeados si quieres que ocupe toda la pantalla */
+  box-shadow: none; /* Puedes quitar la sombra si quieres que ocupe toda la pantalla */
 }
 
 #mapa.sidebar-open {
@@ -142,8 +141,9 @@ vertical-align: middle; /* Alinear verticalmente con el círculo */
 }
 
 /* Ajustar el contenedor del mapa para llenar toda la pantalla cuando el sidebar está cerrado */
-.sidebar:not(.open) + #mapContainer {
-  margin-left: 0;
+.sidebar:not(.open) + #mapa {
+  width: 100vw; /* Ajustar al 100% del ancho del viewport */
+  margin-left: 0; /* Quitar el margen izquierdo para que se expanda completamente */
 }
 
 .sidebar.closed + #mapa {

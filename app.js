@@ -196,15 +196,16 @@ http.listen(80, '0.0.0.0', () => {
 });
 
 function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const openSidebarButton = document.getElementById("openSidebarButton");
+  var sidebar = document.getElementById("sidebar");
+  var mapa = document.getElementById("mapa");
+  sidebar.classList.toggle('open');
 
   if (sidebar.classList.contains('open')) {
-    sidebar.classList.remove('open');
-    openSidebarButton.style.display = 'block'; // Muestra el botón para abrir el sidebar
+    mapa.style.width = 'calc(100% - 250px)'; // Reduce el ancho del mapa cuando el sidebar está abierto
+    mapa.style.marginLeft = '250px'; // Agrega margen cuando el sidebar está abierto
   } else {
-    sidebar.classList.add('open');
-    openSidebarButton.style.display = 'none'; // Oculta el botón cuando el sidebar está abierto
+    mapa.style.width = '100vw'; // Ajustar el ancho del mapa al 100% del viewport
+    mapa.style.marginLeft = '0'; // Quitar margen para que el mapa se expanda
   }
 }
 
