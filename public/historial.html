@@ -11,18 +11,32 @@
     }
   </style>
 </head>
-<body>
+<div id="sidebar" class="sidebar open">
   <h1>Historial de Coordenadas</h1>
-  <div>
-    Fecha Inicio: <input type="date" id="fechaInicio">
-    Hora Inicio: <input type="time" id="horaInicio" step="1">
-    Fecha Fin: <input type="date" id="fechaFin">
-    Hora Fin: <input type="time" id="horaFin" step="1">
-    <button onclick="filtrarHistorial()">Filtrar</button>
-    <input type="range" id="slider" min="0" value="0" style="width: 100%;" />
-    <p id="info">Fecha y hora seleccionada: <span id="fechaHora"></span></p>
+  <div class="sidebar-content">
+    <div class="filter-section">
+      <label for="fechaInicio">Fecha Inicio:</label>
+      <input type="date" id="fechaInicio">
+      <label for="horaInicio">Hora Inicio:</label>
+      <input type="time" id="horaInicio" step="1">
+      <label for="fechaFin">Fecha Fin:</label>
+      <input type="date" id="fechaFin">
+      <label for="horaFin">Hora Fin:</label>
+      <input type="time" id="horaFin" step="1">
+      <button onclick="filtrarHistorial()">Filtrar</button>
+    </div>
+    <div class="slider-section">
+      <input type="range" id="slider" min="0" value="0" style="width: 100%;" />
+      <p id="info"><span id="fechaHora"></span></p>
+    </div>
   </div>
-  <div id="mapa"></div>
+  <!-- Aquí podrías poner tu logo -->
+  <div class="logo-container">
+    <img src="logo.jpeg" alt="Logo" class="sidebar-logo">
+  </div>
+</div>
+<div id="mapa" class="main-content"></div>
+
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
