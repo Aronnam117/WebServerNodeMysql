@@ -82,7 +82,7 @@
         if (marcadorActual) {
           marcadorActual.setPosition(nuevaPosicion);
         } else {
-          marcadorActual = new google.maps.Marker({
+          marcadorActual = new google.maps.Marker.AdvancedMarker({
             position: nuevaPosicion,
             map: mapa,
             title: 'Ubicación actual',
