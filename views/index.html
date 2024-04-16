@@ -21,13 +21,13 @@
   #mapa {
   height: 100vh; /* 100% de la altura del viewport */
   border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
+  box-shadow: 0 4px 8px rgba(0,0,0,0); /* Sombra sutil */
   width: calc(100% - 250px); /* Ajustar el ancho si el sidebar está visible */
   transition: width 0.5s; /* Transición suave para el ancho al abrir/cerrar el sidebar */
 }
 
 #mapa.sidebar-open {
-  width: calc(100vw - 250px); /* Reduce el ancho del mapa en 250px cuando el sidebar esté abierto */
+  width: calc(100vw); /* Reduce el ancho del mapa en 250px cuando el sidebar esté abierto */
   transition: width 0.5s; /* Transición suave para el cambio de ancho */
 }
 
