@@ -73,8 +73,9 @@
         // Actualizar la interfaz de usuario con los nuevos datos
         document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
         document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
-        document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
-        document.getElementById('hora').innerText = 'Hora: ' + data.hora.split('.')[0];
+        var fechaSinHora = data.fecha.split('T')[0]; // Esto dará "2024-04-16"
+        document.getElementById('fecha').innerText = 'Fecha: ' + fechaSinHora;
+        document.getElementById('hora').innerText = 'Hora: ' + data.hora;
 
         const nuevaPosicion = { lat: parseFloat(data.latitud), lng: parseFloat(data.longitud) };
 
