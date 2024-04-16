@@ -122,3 +122,26 @@ vertical-align: middle; /* Alinear verticalmente con el círculo */
   letter-spacing: 0.5px; /* Espaciado entre letras para una mejor claridad */
   margin: 10px 0; /* Espacio vertical entre los elementos del párrafo */
 }
+
+#openSidebarButton {
+  display: none; /* Oculta el botón por defecto */
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2; /* Asegúrate de que esté sobre el mapa */
+}
+
+/* Cuando el sidebar esté cerrado, muestra el botón */
+.sidebar:not(.open) + #mapContainer #openSidebarButton {
+  display: block;
+}
+
+/* Estilo para el contenedor del mapa cuando el sidebar está abierto */
+.main-content {
+  transition: margin-left 0.5s;
+}
+
+/* Ajustar el contenedor del mapa para llenar toda la pantalla cuando el sidebar está cerrado */
+.sidebar:not(.open) + #mapContainer {
+  margin-left: 0;
+}

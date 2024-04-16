@@ -7,7 +7,6 @@
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <button onclick="toggleSidebar()" id="toggleSidebarButton">☰</button>
   <div id="datosContainer"></div>
     <div id="sidebar" class="sidebar open" style="color: #f4f4f9;">
     <button onclick="toggleSidebar()" id="closeSidebarButton" class="closebtn">×</button>
@@ -28,9 +27,10 @@
     </div>
 </div>
 
-  
+<div id="mapContainer" class="main-content">
+  <button onclick="toggleSidebar()" id="openSidebarButton">☰</button> 
 <div id="mapa" class="main-content">
-
+</div>
   <script>
     let mapa; // Variable global para el mapa
     let polylinePath = []; // Almacena las coordenadas de la polilínea
