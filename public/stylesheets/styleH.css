@@ -92,13 +92,13 @@ body {
   .logo-container {
     position: absolute; /* Puedes usar 'relative' si no quieres que sea fijo en la parte superior */
     top: 0; /* Asegura que esté en la parte superior del sidebar */
-    width: 30%; /* Ocupa el ancho completo del sidebar */
+    width: 50%; /* Ocupa el ancho completo del sidebar */
     text-align: center; /* Centra el logo dentro del contenedor */
     padding: 10px 0; /* Agrega algo de relleno en la parte superior e inferior */
   }
   
   .sidebar-logo {
-    max-width: 30%; /* Puede ser 80% o el porcentaje que mejor se vea */
+    max-width: 50%; /* Puede ser 80% o el porcentaje que mejor se vea */
     height: auto; /* Mantiene la proporción del logo */
   }
   
