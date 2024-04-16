@@ -126,7 +126,7 @@
     const info = document.getElementById('fechaHora');
     slider.max = datos.length - 1;
     slider.value = 0;
-    info.textContent = `${datos[0].fecha} ${datos[0].hora}`;
+    info.textContent = `Fecha y hora seleccionada: ${datos[0].fecha} ${datos[0].hora}`;
 
     // Función para actualizar el marcador y la información de fecha y hora
     function actualizarMarker(pos) {
