@@ -6,7 +6,7 @@ body {
 }
 
 h1 {
-  color: #333; /* Color oscuro para el título */
+  color: #C3B582; /* Color oscuro para el título */
   text-align: center; /* Centra el título */
 }
 
@@ -24,8 +24,8 @@ transition: width 0.5s; /* Transición suave para el cambio de ancho */
 }
 
 button {
-  background-color: #007bff; /* Color azul para botones */
-  color: white;
+  background-color: #C3B582; /* Color azul para botones */
+  color: #0b1016;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -35,7 +35,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3; /* Color azul más oscuro al pasar el ratón */
+  background-color: #C3B582; /* Color azul más oscuro al pasar el ratón */
 }
 
 p {
