@@ -98,7 +98,7 @@ body {
   }
   
   .sidebar-logo {
-    max-width: 80%; /* Puede ser 80% o el porcentaje que mejor se vea */
+    max-width: 70%; /* Puede ser 80% o el porcentaje que mejor se vea */
     height: auto; /* Mantiene la proporción del logo */
   }
   
