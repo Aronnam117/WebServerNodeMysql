@@ -209,9 +209,6 @@ function toggleSidebar() {
   }
 }
 
-// Ejecuta esta función en la carga de la página para configurar el estado inicial.
-document.addEventListener('DOMContentLoaded', (event) => {
-  toggleSidebar(); // Esto asegura que el sidebar y el mapa tengan los estados correctos.
-});
+
 // Exportar la aplicación Express
 module.exports = app;
