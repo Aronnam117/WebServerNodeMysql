@@ -71,7 +71,6 @@ body, html {
   }
 }
 
-element.style {
-  height: calc(100% - 60px);
-  color: white;
+#latitud{
+  color: #f4f4f9;
 }
