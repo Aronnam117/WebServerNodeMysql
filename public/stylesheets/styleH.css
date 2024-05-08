@@ -1,0 +1,123 @@
+body {
+    font-family: Arial, sans-serif; 
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+  }
+  
+  h1 {
+    padding-top:30px;
+    color: #C3B582;
+    text-align: center;
+  }
+  
+  /* Sidebar estático con un ancho fijo */
+  .sidebar {
+    height: 100%;
+    width: 250px; /* Ancho fijo del sidebar */
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #0b1016;
+    overflow-x: hidden;
+    padding-top: 60px; /* Ajustar en caso de tener un header */
+  }
+  
+  /* El mapa ahora ocupará todo el alto y el ancho disponible después del sidebar */
+  #mapa {
+    height: 100vh; 
+    width: calc(100vw - 250px); /* Resta el ancho del sidebar */
+    position: absolute;
+    top: 0; /* Ajustar si hay un header */
+    left: 250px; /* Desplazado para hacer espacio al sidebar */
+  }
+  
+  button {
+    background-color: #C3B582;
+    color: #0b1016;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color: #9B8E5B;
+  }
+  
+  /* Estilos para el contenido del sidebar */
+  .sidebar-content {
+
+    padding: 10px;
+  }
+  
+  .filter-section {
+    margin-bottom: 20px;
+  }
+  
+  .slider-section {
+    margin-top: 20px;
+  }
+  
+  /* Estilos para los inputs y botón en el sidebar */
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: white; /* Asegura que las etiquetas sean blancas */
+  }
+  
+  input[type="date"],
+  input[type="time"],
+  button {
+    width: calc(100% - 20px); /* Ajustar el ancho del input/botón al 100% del contenedor menos el padding */
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  /* Estilos para el slider y la información en el sidebar */
+  #slider {
+    margin-bottom: 10px;
+  }
+  
+  #info {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  /* Otros estilos */
+  .logo-container {
+    position: absolute; /* Puedes usar 'relative' si no quieres que sea fijo en la parte superior */
+    top: 0; /* Asegura que esté en la parte superior del sidebar */
+    width: 50%; /* Ocupa el ancho completo del sidebar */
+    text-align: center; /* Centra el logo dentro del contenedor */
+    padding: 10px 0; /* Agrega algo de relleno en la parte superior e inferior */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+  color: inherit; /* El color del texto hereda del elemento padre */
+  display: inline-block;
+  }
+  
+  .sidebar-logo {
+    max-width: 70%; /* Puede ser 80% o el porcentaje que mejor se vea */
+    height: auto; /* Mantiene la proporción del logo */
+  }
+  
+  /* Ocultar los botones no utilizados */
+  #openSidebarButton {
+    display: none;
+  }
+  
+  #info {
+    color: white;
+  }
+  
+  /* Si necesitas cambiar el color de texto de todos los párrafos dentro de .sidebar-content a blanco */
+  .sidebar-content p {
+    color: white;
+  }

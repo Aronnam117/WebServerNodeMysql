@@ -1,64 +1,124 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Información Satelital</title>
- 
-
+  <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
   <script src="http://54.163.39.225/socket.io/socket.io.js"></script>
-
 </head>
 <body>
-  <h1>Información Satelital</h1>
-  <div id="datosContainer">
-    <p id="latitud">Latitud: </p>
-    <p id="longitud">Longitud: </p>
-    <p id="fecha">Fecha: </p>
-    <p id="hora">Hora: </p>
+  <div id="datosContainer"></div>
+    <div id="sidebar" class="sidebar open" style="color: #f4f4f9;">
+    <button onclick="toggleSidebar()" id="closeSidebarButton" class="closebtn">×</button>
+    <h1>Información Satelital</h1>
+  <div class="live-indicator">
+    <span class="live-pulse"></span>
+    <span class="live-text">Live Track</span>
   </div>
+      <p id="latitud">Latitud: </p>
+      <p id="longitud">Longitud: </p>
+      <p id="fecha">Fecha: </p>
+      <p id="hora">Hora: </p>
+      <div id="bottonContainer"></div>
+      <button onclick="window.location.href='/historial';">Ver Historial</button>
+      <div class="logo-container">
+      <img src="logo.jpeg" alt="MRiatt GPS Logo" class="sidebar-logo"  />
+    </div>
+    </div>
+</div>
+
+<div id="mapContainer" class="main-content">
+  <button onclick="toggleSidebar()" id="openSidebarButton">☰</button> 
+<div id="mapa" class="main-content">
+</div>
   <script>
-    // Declarar iniciarMap como global
-    function iniciarMap() {
-      // ...
+    let mapa; // Variable global para el mapa
+    let polylinePath = []; // Almacena las coordenadas de la polilínea
+    let marcadorActual; // Almacena el marcador de la ubicación actual
+       
+    function toggleSidebar() {
+      var sidebar = document.getElementById("sidebar");
+      var content = document.getElementById("mapa");
+      // Check if the sidebar is open or closed by checking the presence of the 'open' class
+      if (sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+        content.classList.remove('shifted');
+      } else {
+        sidebar.classList.add('open');
+        content.classList.add('shifted');
+      }
     }
-  </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
-  <div id="mapa" style="height: 400px;"></div>
-  <script>
-    let marker; // Variable global para el marcador
-  
+
     function iniciarMap() {
-      // Configuración del mapa
-      const mapOptions = {
+      // Configuración inicial del mapa
+      mapa = new google.maps.Map(document.getElementById('mapa'), {
         center: { lat: 0, lng: 0 }, // Coordenadas iniciales
         zoom: 12, // Nivel de zoom inicial
-      };
-  
-      // Crear el mapa
-      const mapa = new google.maps.Map(document.getElementById('mapa'), mapOptions);
-  
-      // Crear el marcador
-      marker = new google.maps.Marker({
-        position: mapOptions.center,
-        map: mapa,
-        title: 'Ubicación actual',
       });
-  
+
+      // Inicializar la polilínea sin camino
+      polyline = new google.maps.Polyline({
+        path: polylinePath,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2,
+        map: mapa,
+      });
+
       const socket = io();
-  
+
       socket.on('datosActualizados', (data) => {
         // Actualizar la interfaz de usuario con los nuevos datos
         document.getElementById('latitud').innerText = 'Latitud: ' + data.latitud;
         document.getElementById('longitud').innerText = 'Longitud: ' + data.longitud;
-        document.getElementById('fecha').innerText = 'Fecha: ' + data.fecha;
+        var fechaSinHora = data.fecha.split('T')[0]; // Esto dará "2024-04-16"
+        document.getElementById('fecha').innerText = 'Fecha: ' + fechaSinHora;
         document.getElementById('hora').innerText = 'Hora: ' + data.hora;
-  
-        // Actualizar posición del marcador
-        const markerPosition = new google.maps.LatLng(data.latitud, data.longitud);
-        marker.setPosition(markerPosition);
-        mapa.setCenter(markerPosition);
+
+        const nuevaPosicion = { lat: parseFloat(data.latitud), lng: parseFloat(data.longitud) };
+
+        // Crear un nuevo marcador o actualizar el existente
+        if (marcadorActual) {
+          marcadorActual.setPosition(nuevaPosicion);
+        } else {
+          marcadorActual = new google.maps.Marker({
+            position: nuevaPosicion,
+            map: mapa,
+            title: 'Ubicación actual',
+          });
+        }
+
+        // Actualizar la posición del mapa
+        mapa.setCenter(nuevaPosicion);
+        mapa.setZoom(15);
+
+        // Actualizar y dibujar la polilínea con las nuevas coordenadas
+        polylinePath.push(nuevaPosicion);
+        polyline.setPath(polylinePath);
       });
     }
+     // Este código ahora está en el cliente, no en el servidor
+  function toggleSidebar() {
+      var sidebar = document.getElementById("sidebar");
+      var content = document.getElementById("mapa");
+      
+      // Toggle la clase 'open' para mostrar/ocultar el sidebar
+      if (sidebar.classList.contains('open')) {
+          sidebar.classList.remove('open');
+          content.classList.remove('shifted');
+      } else {
+          sidebar.classList.add('open');
+          content.classList.add('shifted');
+      }
+  }
+
+  // Agrega un evento para cuando se carga el DOM
+  document.addEventListener('DOMContentLoaded', (event) => {
+      // Asegúrate de que el sidebar comience abierto cuando se carga la página
+      toggleSidebar();
+  });
   </script>
+ <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=iniciarMap"></script>
 </body>
 </html>

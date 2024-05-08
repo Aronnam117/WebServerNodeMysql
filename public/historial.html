@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Historial de Coordenadas</title>
+  <link rel="stylesheet" type="text/css" href="stylesheets/styleH.css">
+  <style>
+  </style>
+</head>
+<div id="sidebar" class="sidebar open">
+  <h1>Historial de Coordenadas</h1>
+  <div class="logo-container">
+    <a href="/">
+    <img src="logo.jpeg" alt="Logo" class="sidebar-logo">
+  </a>
+  </div>
+  <div class="sidebar-content">
+    <div class="filter-section">
+      <label for="fechaInicio">Fecha Inicio:</label>
+      <input type="date" id="fechaInicio">
+      <label for="horaInicio">Hora Inicio:</label>
+      <input type="time" id="horaInicio" step="1">
+      <label for="fechaFin">Fecha Fin:</label>
+      <input type="date" id="fechaFin">
+      <label for="horaFin">Hora Fin:</label>
+      <input type="time" id="horaFin" step="1">
+      <button onclick="filtrarHistorial()">Filtrar</button>
+    </div>
+    <div class="slider-section">
+      <input type="range" id="slider" min="0" value="0" style="width: 100%;" />
+      <p id="info">Fecha y hora: <span id="fechaHora"></span></p>
+    </div>
+  </div>
+  
+</div>
+<div id="mapa" class="main-content"></div>
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    let mapa;
+    let ruta;
+
+    // Esta función se llama cuando el usuario hace clic en "Filtrar"
+    function filtrarHistorial() {
+      const fechaInicio = document.getElementById('fechaInicio').value;
+      const horaInicio = document.getElementById('horaInicio').value;
+      const fechaFin = document.getElementById('fechaFin').value;
+      const horaFin = document.getElementById('horaFin').value;
+
+      console.log(fechaInicio, horaInicio, fechaFin, horaFin);
+
+      if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+        alert('Por favor, complete todos los campos de fecha y hora.');
+        return;
+      }
+
+      // Establece una conexión WebSocket y envía los datos de filtrado
+      const socket = io.connect();
+      socket.emit('filtrarDatos', {
+        fechaInicio: fechaInicio,
+        horaInicio: horaInicio,
+        fechaFin: fechaFin,
+        horaFin: horaFin
+      });
+
+      socket.on('rutaFiltrada', function(results) {
+  if (results.length === 0) {
+    alert('No se encontraron datos para el rango especificado.');
+  } else {
+    if (!mapa) {
+      initMap(); // Inicializa el mapa si aún no se ha inicializado
+    }
+    dibujarRuta(results);
+  }
+});
+
+    }
+
+    // Inicializa el mapa de Google Maps
+    function initMap() {
+      mapa = new google.maps.Map(document.getElementById('mapa'), {
+        zoom: 5,
+        center: { lat: 4, lng: -74 } // Centro inicial del mapa
+      });
+    }
+
+    // Dibuja la ruta en el mapa a partir de los datos de la base de datos
+    function dibujarRuta(datos) {
+  const coordenadas = datos.map(punto => ({
+    lat: parseFloat(punto.latitud),
+    lng: parseFloat(punto.longitud)
+  }));
+
+  if (ruta) {
+    ruta.setMap(null); // Limpia la ruta anterior si existe
+  }
+
+  ruta = new google.maps.Polyline({
+    path: coordenadas,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+  });
+
+  ruta.setMap(mapa);
+
+  // Si hay coordenadas, ajusta la vista del mapa y crea el marcador
+  if (coordenadas.length > 0) {
+    mapa.fitBounds(new google.maps.LatLngBounds(...coordenadas));
+
+    // Crear o mover el marcador de la ubicación actual
+    const marcadorSlider = new google.maps.Marker({
+      position: coordenadas[0],
+      map: mapa,
+      title: 'Ubicación seleccionada'
+    });
+
+    // Actualizar el slider y la información de fecha y hora
+    const slider = document.getElementById('slider');
+    const info = document.getElementById('fechaHora');
+    slider.max = datos.length - 1;
+    slider.value = 0;
+    info.textContent = `${datos[0].fecha} ${datos[0].hora}`;
+
+    // Función para actualizar el marcador y la información de fecha y hora
+    function actualizarMarker(pos) {
+  const punto = datos[pos];
+  const latLng = new google.maps.LatLng(parseFloat(punto.latitud), parseFloat(punto.longitud));
+  marcadorSlider.setPosition(latLng);
+  mapa.setCenter(latLng);  // Centra el mapa en la nueva posición del marcador
+  // También puedes ajustar el nivel de zoom si es necesario
+  mapa.setZoom();
+
+  // Si estás mostrando fecha y hora, actualízalas aquí también
+  const fechaHora = punto.fecha + ' ' + punto.hora; // Ajusta esto según cómo estés manejando la fecha y hora
+  document.getElementById('fechaHora').textContent = fechaHora;
+}
+
+    // Evento para cuando el valor del slider cambia
+    slider.oninput = function() {
+      actualizarMarker(this.value);
+    };
+  }
+}
+
+    window.initMap = initMap; // Hace que initMap sea global para que la API de Google Maps pueda invocarla
+  </script>
+  
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHG3E1JXIiByWmkQKEbVCaZZaynnQjOcc&callback=initMap"></script>
+  </script>
+</body>
+</html>
